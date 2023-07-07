@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Flex,
   Heading,
   Input,
@@ -14,6 +15,7 @@ import PlayerInputRow from "./PlayerInputRow";
 const InputForm = () => {
   const [game, setGame] = useState<string>("");
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(3);
+  const [winner, setWinner] = useState<string | null>(null);
 
   // this is an array of profile objects fetched from api
   const myRecentPlayers = [
@@ -115,6 +117,23 @@ const InputForm = () => {
           </Text>
           <Input width="370px" bgColor="white" />
         </Flex>
+        <Flex direction="row" justifyContent="center">
+          {winner && winner !== "tie" ? (
+            <Text>{winner} won!</Text>
+          ) : (
+            <Text>No winner determined.</Text>
+          )}
+        </Flex>
+        <Flex>
+          <Checkbox
+            isChecked={winner === "tie"}
+            onChange={() => {
+              winner === "tie" ? setWinner(null) : setWinner("tie");
+            }}
+          >
+            Tie
+          </Checkbox>
+        </Flex>
       </Flex>
       <Flex justifyContent="center" mb="5px">
         <Button
@@ -146,6 +165,8 @@ const InputForm = () => {
         return (
           <PlayerInputRow
             playerNumber={player}
+            winner={winner}
+            setWinner={setWinner}
             recentPlayers={recentPlayers}
             setRecentPlayers={setRecentPlayers}
           />

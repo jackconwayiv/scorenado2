@@ -1,4 +1,13 @@
-import { Flex, Input, Tag, Text, Wrap, WrapItem } from "@chakra-ui/react";
+import {
+  Button,
+  Checkbox,
+  Flex,
+  Input,
+  Tag,
+  Text,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import colorArray from "../resources/colorArray";
 import TagInputRow from "./TagInputRow";
@@ -6,11 +15,15 @@ interface PlayerInputRowProps {
   playerNumber: number;
   recentPlayers: any;
   setRecentPlayers: any;
+  winner: string | null;
+  setWinner: any;
 }
 const PlayerInputRow = ({
   playerNumber,
   recentPlayers,
   setRecentPlayers,
+  winner,
+  setWinner,
 }: PlayerInputRowProps) => {
   const [name, setName] = useState<string>("");
   const [points, setPoints] = useState<number | null>(null);
@@ -61,11 +74,41 @@ const PlayerInputRow = ({
         <Text width="85px" p="10px" textAlign="right">
           Points:{" "}
         </Text>
-        <Input width="110px" bgColor="white" />
-        <Text width="85px" p="10px" textAlign="right">
-          Result:{" "}
-        </Text>
-        <Input width="115px" bgColor="white" />
+        <Button
+          size="xs"
+          m="5px"
+          onClick={() => setPoints(points ? points + 1 : 1)}
+        >
+          +
+        </Button>
+        <Input
+          value={points === null ? "" : points}
+          textAlign="center"
+          onChange={(e) =>
+            e.target.value
+              ? setPoints(parseInt(e.target.value))
+              : setPoints(null)
+          }
+          width="80px"
+          bgColor="white"
+        />
+        <Button
+          size="xs"
+          m="5px"
+          onClick={() => setPoints(points ? points - 1 : -1)}
+        >
+          -
+        </Button>
+        <Flex width="200px" justifyContent="center">
+          <Checkbox
+            isDisabled={!name || winner === "tie"}
+            isChecked={winner === name}
+            colorScheme="purple"
+            onChange={() => setWinner(name)}
+          >
+            Winner
+          </Checkbox>
+        </Flex>
       </Flex>
       <TagInputRow />
     </Flex>
