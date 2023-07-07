@@ -1,5 +1,6 @@
 import {
   Flex,
+  Heading,
   Tab,
   TabList,
   TabPanel,
@@ -11,7 +12,8 @@ import InputForm from "./components/InputForm";
 
 function App() {
   return (
-    <Flex justifyContent="center">
+    <Flex direction="column" justifyContent="center" alignItems="center">
+      <Heading size="4xl">Scorenado</Heading>
       <Flex width="420px" mt="20px">
         <Tabs
           isFitted

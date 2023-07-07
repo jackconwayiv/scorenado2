@@ -7,14 +7,14 @@ const TagInputRow = () => {
 
   const [tag, setTag] = useState<string | null>(null);
   return (
-    <Flex>
+    <Flex mt="5px">
       <Text width="85px" p="10px" textAlign="right">
         Tag:{" "}
       </Text>
       <Input
         value={tag || ""}
         onChange={(e) => setTag(e.target.value)}
-        width="230px"
+        width="310px"
         bgColor="white"
       />
     </Flex>
