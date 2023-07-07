@@ -20,17 +20,17 @@ function App() {
           colorScheme="purple"
         >
           <TabList mb="1em">
-            <Tab>Profile</Tab>
             <Tab>Input</Tab>
+            <Tab>Profile</Tab>
             <Tab>Scores</Tab>
             <Tab>Calendar</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
-              <p>profile!</p>
+              <InputForm />
             </TabPanel>
             <TabPanel>
-              <InputForm />
+              <p>profile!</p>
             </TabPanel>
             <TabPanel>
               <p>data!</p>
