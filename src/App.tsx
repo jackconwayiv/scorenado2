@@ -1,25 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
+import "./App.css";
+import InputForm from "./components/InputForm";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Flex justifyContent="center">
+      <Flex width="420px" mt="20px">
+        <Tabs
+          isFitted
+          width="420px"
+          variant="solid-rounded"
+          colorScheme="purple"
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <TabList mb="1em">
+            <Tab>Profile</Tab>
+            <Tab>Input</Tab>
+            <Tab>Scores</Tab>
+            <Tab>Calendar</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <p>profile!</p>
+            </TabPanel>
+            <TabPanel>
+              <InputForm />
+            </TabPanel>
+            <TabPanel>
+              <p>data!</p>
+            </TabPanel>
+            <TabPanel>
+              <p>calendar!</p>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Flex>
+    </Flex>
   );
 }
 
