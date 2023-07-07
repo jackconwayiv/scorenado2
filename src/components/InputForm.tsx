@@ -3,17 +3,31 @@ import {
   Flex,
   Heading,
   Input,
+  InputGroup,
+  InputLeftElement,
   Tag,
-  Text,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PlayerInputRow from "./PlayerInputRow";
 
 const InputForm = () => {
   const [game, setGame] = useState<string>("");
+  const [date, setDate] = useState<String>("");
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(3);
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+    setDate(formattedDate);
+  }, []);
+
+  const today = new Date();
+  const defaultDateValue = new Date(today).toISOString().split("T")[0]; // yyyy-mm-dd
 
   // this is an array of profile objects fetched from api
   const myRecentPlayers = [
@@ -74,52 +88,76 @@ const InputForm = () => {
   };
 
   return (
-    <Flex direction="column" width="400px" alignItems="center">
+    <Flex direction="column" width="390px">
       <Heading size="lg" mb="10px">
         Input New Game Scores
       </Heading>
-      <Flex direction="column" p="5px" width="400px">
+      <Flex direction="column" p="5px" width="390px">
         <Flex>
-          <Text width="85px" p="10px" textAlign="right">
-            Game:{" "}
-          </Text>
-          <Input
-            value={game}
-            onChange={(e) => setGame(e.target.value)}
-            width="370px"
-            bgColor="white"
-          />
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              color="gray.400"
+              fontSize=".7em"
+              children="Game"
+            />
+            <Input
+              value={game}
+              onChange={(e) => setGame(e.target.value)}
+              width="380px"
+              textAlign="center"
+              mr="10px"
+              bgColor="white"
+            />
+          </InputGroup>
         </Flex>
-        <Wrap mt="5px">
-          {game === "" &&
-            myRecentGames.map((game) => {
-              return (
-                <WrapItem key={game.id}>
-                  <Tag
-                    cursor="pointer"
-                    size="sm"
-                    bgColor="gray.100"
-                    onClick={() => {
-                      setGame(game.name);
-                    }}
-                  >
-                    {game.name} ({game.qty})
-                  </Tag>
-                </WrapItem>
-              );
-            })}
-        </Wrap>
+        <Flex mt="5px" justifyContent="center">
+          <Wrap>
+            {game === "" &&
+              myRecentGames.map((game) => {
+                return (
+                  <WrapItem key={game.id}>
+                    <Tag
+                      cursor="pointer"
+                      size="sm"
+                      bgColor="gray.100"
+                      onClick={() => {
+                        setGame(game.name);
+                      }}
+                    >
+                      {game.name} ({game.qty})
+                    </Tag>
+                  </WrapItem>
+                );
+              })}
+          </Wrap>
+        </Flex>
         <Flex mt="5px">
-          <Text width="85px" p="10px" textAlign="right">
-            Date:{" "}
-          </Text>
-          <Input width="370px" bgColor="white" />
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              color="gray.400"
+              fontSize=".7em"
+              children="Date"
+            />
+            <Input
+              width="380px"
+              mr="10px"
+              bgColor="white"
+              type="date"
+              textAlign="center"
+              defaultValue={defaultDateValue}
+              onBlur={(e) => setDate(e.target.value)}
+            />
+          </InputGroup>
         </Flex>
       </Flex>
       <Flex justifyContent="center" mb="5px">
         <Button
-          m="5px"
-          bgColor="green.200"
+          mt="5px"
+          bgColor="green.400"
+          size="sm"
+          colorScheme="green"
           isDisabled={numberOfPlayers > 5}
           onClick={() => {
             setNumberOfPlayers(numberOfPlayers + 1);
@@ -132,8 +170,10 @@ const InputForm = () => {
         </Flex>
 
         <Button
-          m="5px"
-          bgColor="red.200"
+          mt="5px"
+          size="sm"
+          bgColor="red.400"
+          colorScheme="red"
           isDisabled={numberOfPlayers < 2}
           onClick={() => {
             setNumberOfPlayers(numberOfPlayers - 1);

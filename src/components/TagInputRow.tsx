@@ -1,4 +1,10 @@
-import { Flex, Input, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+} from "@chakra-ui/react";
 import { useState } from "react";
 
 const TagInputRow = () => {
@@ -7,17 +13,24 @@ const TagInputRow = () => {
 
   const [tag, setTag] = useState<string | null>(null);
   return (
-    <Flex mt="5px">
-      <Text width="85px" p="10px" textAlign="right">
-        Tag:{" "}
-      </Text>
+    <InputGroup mr="10px">
+      <InputLeftElement
+        pointerEvents="none"
+        color="gray.400"
+        fontSize=".7em"
+        children="Tags"
+      />
       <Input
-        value={tag || ""}
-        onChange={(e) => setTag(e.target.value)}
-        width="310px"
+        // value={tag || ""}
+        // onChange={(e) => setTag(e.target.value)}
+        // placeholder={`tags`}
+        width="275px"
         bgColor="white"
       />
-    </Flex>
+      <InputRightElement>
+        <Button size="xs">+</Button>
+      </InputRightElement>
+    </InputGroup>
   );
 };
 export default TagInputRow;

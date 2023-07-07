@@ -3,8 +3,10 @@ import {
   Checkbox,
   Flex,
   Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
   Tag,
-  Text,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
@@ -31,19 +33,57 @@ const PlayerInputRow = ({
       direction="column"
       justifyContent="space-between"
       bgColor={colorArray[playerNumber]}
-      width="400px"
+      width="380px"
       p="5px"
+      mt="5px"
     >
       <Flex direction="row" mt="5px">
-        <Text width="85px" p="10px" textAlign="right">
-          Player {playerNumber}:{" "}
-        </Text>
-        <Input
-          width="310px"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          bgColor="white"
-        />
+        <InputGroup>
+          <InputLeftElement
+            pointerEvents="none"
+            color="gray.400"
+            fontSize=".7em"
+            children={`P${playerNumber}`}
+          />
+          <Input
+            width="245px"
+            value={name}
+            textAlign="center"
+            onChange={(e) => setName(e.target.value)}
+            bgColor="white"
+          />
+        </InputGroup>
+        <InputGroup width="120px">
+          <InputLeftElement>
+            <Button
+              size="xs"
+              m="5px"
+              onClick={() => setPoints(points ? points + 1 : 1)}
+            >
+              +
+            </Button>
+          </InputLeftElement>
+          <Input
+            // value={points === null ? "" : points}
+            textAlign="center"
+            onBlur={(e) =>
+              e.target.value
+                ? setPoints(parseInt(e.target.value))
+                : setPoints(null)
+            }
+            width="250px"
+            bgColor="white"
+          />
+          <InputRightElement>
+            <Button
+              size="xs"
+              m="5px"
+              onClick={() => setPoints(points ? points - 1 : -1)}
+            >
+              -
+            </Button>
+          </InputRightElement>
+        </InputGroup>
       </Flex>
       <Wrap>
         {name === "" &&
@@ -67,47 +107,18 @@ const PlayerInputRow = ({
             );
           })}
       </Wrap>
-      <Flex mt="5px">
-        <Text width="85px" p="10px" textAlign="right">
-          Points:{" "}
-        </Text>
-        <Button
-          size="xs"
-          m="5px"
-          onClick={() => setPoints(points ? points + 1 : 1)}
+      <Flex justifyContent="center" mt="5px">
+        <TagInputRow />
+        <Checkbox
+          isDisabled={!name}
+          isChecked={winning}
+          mr="10px"
+          colorScheme="purple"
+          onChange={() => setWinning(!winning)}
         >
-          +
-        </Button>
-        <Input
-          value={points === null ? "" : points}
-          textAlign="center"
-          onChange={(e) =>
-            e.target.value
-              ? setPoints(parseInt(e.target.value))
-              : setPoints(null)
-          }
-          width="140px"
-          bgColor="white"
-        />
-        <Button
-          size="xs"
-          m="5px"
-          onClick={() => setPoints(points ? points - 1 : -1)}
-        >
-          -
-        </Button>
-        <Flex width="100px" justifyContent="center">
-          <Checkbox
-            isDisabled={!name}
-            isChecked={winning}
-            colorScheme="purple"
-            onChange={() => setWinning(!winning)}
-          >
-            Winner
-          </Checkbox>
-        </Flex>
+          Winner
+        </Checkbox>
       </Flex>
-      <TagInputRow />
     </Flex>
   );
 };

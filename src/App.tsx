@@ -14,10 +14,10 @@ function App() {
   return (
     <Flex direction="column" justifyContent="center" alignItems="center">
       <Heading size="4xl">Scorenado</Heading>
-      <Flex width="420px" mt="20px">
+      <Flex width="400px" mt="20px" justifyContent="center">
         <Tabs
           isFitted
-          width="420px"
+          width="400px"
           variant="solid-rounded"
           colorScheme="purple"
         >
