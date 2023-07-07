@@ -15,19 +15,16 @@ interface PlayerInputRowProps {
   playerNumber: number;
   recentPlayers: any;
   setRecentPlayers: any;
-  winner: string | null;
-  setWinner: any;
 }
 const PlayerInputRow = ({
   playerNumber,
   recentPlayers,
   setRecentPlayers,
-  winner,
-  setWinner,
 }: PlayerInputRowProps) => {
   const [name, setName] = useState<string>("");
   const [points, setPoints] = useState<number | null>(null);
   const [result, setResult] = useState<string | null>("");
+  const [winning, setWinning] = useState<boolean>(false);
 
   return (
     <Flex
@@ -89,7 +86,7 @@ const PlayerInputRow = ({
               ? setPoints(parseInt(e.target.value))
               : setPoints(null)
           }
-          width="80px"
+          width="140px"
           bgColor="white"
         />
         <Button
@@ -99,12 +96,12 @@ const PlayerInputRow = ({
         >
           -
         </Button>
-        <Flex width="200px" justifyContent="center">
+        <Flex width="100px" justifyContent="center">
           <Checkbox
-            isDisabled={!name || winner === "tie"}
-            isChecked={winner === name}
+            isDisabled={!name}
+            isChecked={winning}
             colorScheme="purple"
-            onChange={() => setWinner(name)}
+            onChange={() => setWinning(!winning)}
           >
             Winner
           </Checkbox>
