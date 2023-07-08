@@ -185,6 +185,7 @@ const InputForm = () => {
       {makeArrayOfPlayers().map((player) => {
         return (
           <PlayerInputRow
+            key={player}
             playerNumber={player}
             recentPlayers={recentPlayers}
             setRecentPlayers={setRecentPlayers}

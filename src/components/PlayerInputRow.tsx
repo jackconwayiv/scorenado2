@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Flex,
   Input,
   InputGroup,
@@ -107,18 +106,7 @@ const PlayerInputRow = ({
             );
           })}
       </Wrap>
-      <Flex justifyContent="center" mt="5px">
-        <TagInputRow />
-        <Checkbox
-          isDisabled={!name}
-          isChecked={winning}
-          mr="10px"
-          colorScheme="purple"
-          onChange={() => setWinning(!winning)}
-        >
-          Winner
-        </Checkbox>
-      </Flex>
+      <TagInputRow name={name} winning={winning} setWinning={setWinning} />
     </Flex>
   );
 };
