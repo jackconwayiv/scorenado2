@@ -85,7 +85,9 @@ const TagInputRow = ({ name, winning, setWinning }: TagInputRowProps) => {
             value={tag || ""}
             width="275px"
             bgColor="white"
-            onChange={(e) => setTag(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length < 31) setTag(e.target.value);
+            }}
             onBlur={(e) => addTag(e.target.value)}
           />
           <InputRightElement>

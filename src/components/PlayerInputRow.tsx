@@ -45,14 +45,16 @@ const PlayerInputRow = ({
             children={`P${playerNumber}`}
           />
           <Input
-            width="245px"
+            width="240px"
             value={name}
             textAlign="center"
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length < 19) setName(e.target.value);
+            }}
             bgColor="white"
           />
         </InputGroup>
-        <InputGroup width="120px">
+        <InputGroup width="125px">
           <InputLeftElement>
             <Button
               size="xs"
@@ -70,8 +72,10 @@ const PlayerInputRow = ({
             value={displayPoints || ""}
             textAlign="center"
             onChange={(e) => {
-              const newPointsDisplay = e.target.value;
-              setDisplayPoints(newPointsDisplay);
+              if (e.target.value.length < 5) {
+                const newPointsDisplay = e.target.value;
+                setDisplayPoints(newPointsDisplay);
+              }
             }}
             onBlur={(e) => {
               const newPoints = parseInt(e.target.value) || null;
@@ -99,8 +103,6 @@ const PlayerInputRow = ({
             </Button>
           </InputRightElement>
         </InputGroup>
-        {JSON.stringify(displayPoints)}
-        {JSON.stringify(points)}
       </Flex>
       <Wrap>
         {name === "" &&

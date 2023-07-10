@@ -14,16 +14,13 @@ import PlayerInputRow from "./PlayerInputRow";
 
 const InputForm = () => {
   const [game, setGame] = useState<string>("");
-  const [date, setDate] = useState<String>("");
-  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(3);
+  const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
+
+  const dateOfToday = new Date().toISOString().substring(0, 10);
 
   useEffect(() => {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const day = String(currentDate.getDate()).padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-    setDate(formattedDate);
+    setDateOfGame(dateOfToday);
   }, []);
 
   const today = new Date();
@@ -87,6 +84,18 @@ const InputForm = () => {
     return playerArray;
   };
 
+  const isDateValid = (dateToCheck: any) => {
+    return dateToCheck <= defaultDateValue;
+  };
+
+  const handleDateChange = (assignedDate: string) => {
+    if (isDateValid(assignedDate)) {
+      setDateOfGame(assignedDate);
+    } else {
+      setDateOfGame(dateOfToday);
+    }
+  };
+
   return (
     <Flex direction="column" width="390px">
       <Heading size="lg" mb="10px">
@@ -103,7 +112,9 @@ const InputForm = () => {
             />
             <Input
               value={game}
-              onChange={(e) => setGame(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length < 31) setGame(e.target.value);
+              }}
               width="380px"
               textAlign="center"
               mr="10px"
@@ -146,8 +157,8 @@ const InputForm = () => {
               bgColor="white"
               type="date"
               textAlign="center"
-              defaultValue={defaultDateValue}
-              onBlur={(e) => setDate(e.target.value)}
+              value={dateOfGame ? dateOfGame : dateOfToday}
+              onChange={(e) => handleDateChange(e.target.value)}
             />
           </InputGroup>
         </Flex>
@@ -192,6 +203,7 @@ const InputForm = () => {
           />
         );
       })}
+      BUTTON FOR SUBMIT
     </Flex>
   );
 };
