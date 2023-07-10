@@ -24,7 +24,7 @@ const PlayerInputRow = ({
 }: PlayerInputRowProps) => {
   const [name, setName] = useState<string>("");
   const [points, setPoints] = useState<number | null>(null);
-  const [result, setResult] = useState<string | null>("");
+  const [displayPoints, setDisplayPoints] = useState<string>("");
   const [winning, setWinning] = useState<boolean>(false);
 
   return (
@@ -57,19 +57,31 @@ const PlayerInputRow = ({
             <Button
               size="xs"
               m="5px"
-              onClick={() => setPoints(points ? points + 1 : 1)}
+              onClick={() => {
+                const newPointsValue = points ? points + 1 : 1;
+                setPoints(newPointsValue);
+                setDisplayPoints(newPointsValue.toString());
+              }}
             >
               +
             </Button>
           </InputLeftElement>
           <Input
-            // value={points === null ? "" : points}
+            value={displayPoints || ""}
             textAlign="center"
-            onBlur={(e) =>
-              e.target.value
-                ? setPoints(parseInt(e.target.value))
-                : setPoints(null)
-            }
+            onChange={(e) => {
+              const newPointsDisplay = e.target.value;
+              setDisplayPoints(newPointsDisplay);
+            }}
+            onBlur={(e) => {
+              const newPoints = parseInt(e.target.value) || null;
+              setPoints(newPoints);
+              if (!newPoints) {
+                setDisplayPoints("");
+              } else {
+                setDisplayPoints(newPoints.toString());
+              }
+            }}
             width="250px"
             bgColor="white"
           />
@@ -77,12 +89,18 @@ const PlayerInputRow = ({
             <Button
               size="xs"
               m="5px"
-              onClick={() => setPoints(points ? points - 1 : -1)}
+              onClick={() => {
+                const newPointsValue = points ? points - 1 : -1;
+                setPoints(newPointsValue);
+                setDisplayPoints(newPointsValue.toString());
+              }}
             >
               -
             </Button>
           </InputRightElement>
         </InputGroup>
+        {JSON.stringify(displayPoints)}
+        {JSON.stringify(points)}
       </Flex>
       <Wrap>
         {name === "" &&
