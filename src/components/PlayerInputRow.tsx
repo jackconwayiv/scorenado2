@@ -16,16 +16,36 @@ interface PlayerInputRowProps {
   playerNumber: number;
   recentPlayers: any;
   setRecentPlayers: any;
+  formsCompletion: boolean[];
+  setFormsCompletion: any;
 }
 const PlayerInputRow = ({
   playerNumber,
   recentPlayers,
   setRecentPlayers,
+  formsCompletion,
+  setFormsCompletion,
 }: PlayerInputRowProps) => {
   const [name, setName] = useState<string>("");
   const [points, setPoints] = useState<number | null>(null);
   const [displayPoints, setDisplayPoints] = useState<string>("");
   const [winning, setWinning] = useState<boolean>(false);
+
+  const handleNameInput = (playerName: string) => {
+    if (playerName.length < 19) {
+      setName(playerName);
+    }
+    const isPlayerReady = playerName.length > 0;
+    const newCompletion = [...formsCompletion];
+    newCompletion[playerNumber] = isPlayerReady;
+    setFormsCompletion(newCompletion);
+  };
+
+  const markPlayerFormAsComplete = () => {
+    const newCompletion = [...formsCompletion];
+    newCompletion[playerNumber] = true;
+    setFormsCompletion(newCompletion);
+  };
 
   return (
     <Flex
@@ -49,7 +69,7 @@ const PlayerInputRow = ({
             value={name}
             textAlign="center"
             onChange={(e) => {
-              if (e.target.value.length < 19) setName(e.target.value);
+              handleNameInput(e.target.value);
             }}
             bgColor="white"
           />
@@ -118,6 +138,7 @@ const PlayerInputRow = ({
                     const newRecentPlayers = recentPlayers.toSpliced(idx, 1);
                     setRecentPlayers(newRecentPlayers);
                     setName(player.name);
+                    markPlayerFormAsComplete();
                   }}
                 >
                   {player.name}

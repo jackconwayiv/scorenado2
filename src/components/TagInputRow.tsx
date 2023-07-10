@@ -13,7 +13,7 @@ import {
   Wrap,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { AiFillTag, AiFillTags, AiOutlineTag } from "react-icons/ai";
+import { AiFillTag, AiOutlineTag } from "react-icons/ai";
 interface TagInputRowProps {
   name: string;
   winning: boolean;
@@ -79,7 +79,7 @@ const TagInputRow = ({ name, winning, setWinning }: TagInputRowProps) => {
             color="gray.400"
             fontSize=".7em"
           >
-            <AiFillTags />
+            Tags
           </InputLeftElement>
           <Input
             value={tag || ""}

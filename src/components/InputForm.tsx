@@ -15,16 +15,21 @@ import PlayerInputRow from "./PlayerInputRow";
 const InputForm = () => {
   const [game, setGame] = useState<string>("");
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
-  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
+
+  //formsCompletion is an array of booleans with length equal to one more than the number of players
+  //the index of each bool in formsCompletion represents the player, with the 0th being the game form
+  const [formsCompletion, setFormsCompletion] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
 
   const dateOfToday = new Date().toISOString().substring(0, 10);
 
   useEffect(() => {
-    setDateOfGame(dateOfToday);
+    const todaysDate = new Date().toISOString().substring(0, 10);
+    setDateOfGame(todaysDate);
   }, []);
-
-  const today = new Date();
-  const defaultDateValue = new Date(today).toISOString().split("T")[0]; // yyyy-mm-dd
 
   // this is an array of profile objects fetched from api
   const myRecentPlayers = [
@@ -76,24 +81,28 @@ const InputForm = () => {
     { id: 5, name: "Azul", qty: 3 },
   ];
 
-  const makeArrayOfPlayers = () => {
-    let playerArray = [];
-    for (let i = 1; i <= numberOfPlayers; i++) {
-      playerArray.push(i);
-    }
-    return playerArray;
-  };
-
-  const isDateValid = (dateToCheck: any) => {
-    return dateToCheck <= defaultDateValue;
-  };
-
   const handleDateChange = (assignedDate: string) => {
-    if (isDateValid(assignedDate)) {
+    if (assignedDate <= dateOfToday) {
       setDateOfGame(assignedDate);
     } else {
       setDateOfGame(dateOfToday);
     }
+  };
+
+  const markGameFormAsComplete = () => {
+    const newCompletion = [...formsCompletion];
+    newCompletion[0] = true;
+    setFormsCompletion(newCompletion);
+  };
+
+  const handleGameInput = (gameName: string) => {
+    if (gameName.length < 31) {
+      setGame(gameName);
+    }
+    const isGameReady = gameName.length > 0;
+    const newCompletion = [...formsCompletion];
+    newCompletion[0] = isGameReady;
+    setFormsCompletion(newCompletion);
   };
 
   return (
@@ -113,7 +122,7 @@ const InputForm = () => {
             <Input
               value={game}
               onChange={(e) => {
-                if (e.target.value.length < 31) setGame(e.target.value);
+                handleGameInput(e.target.value);
               }}
               width="380px"
               textAlign="center"
@@ -134,6 +143,7 @@ const InputForm = () => {
                       bgColor="gray.100"
                       onClick={() => {
                         setGame(game.name);
+                        markGameFormAsComplete();
                       }}
                     >
                       {game.name} ({game.qty})
@@ -169,15 +179,18 @@ const InputForm = () => {
           bgColor="green.400"
           size="sm"
           colorScheme="green"
-          isDisabled={numberOfPlayers > 5}
+          isDisabled={formsCompletion.length > 6}
           onClick={() => {
-            setNumberOfPlayers(numberOfPlayers + 1);
+            const playersArray = [...formsCompletion];
+            playersArray.push(false);
+            setFormsCompletion(playersArray);
           }}
         >
           +
         </Button>
         <Flex alignItems="center" justifyContent="center" width="80px">
-          {numberOfPlayers} {numberOfPlayers > 1 ? <>players</> : <>player</>}
+          {formsCompletion.length - 1}{" "}
+          {formsCompletion.length > 2 ? <>players</> : <>player</>}
         </Flex>
 
         <Button
@@ -185,25 +198,40 @@ const InputForm = () => {
           size="sm"
           bgColor="red.400"
           colorScheme="red"
-          isDisabled={numberOfPlayers < 2}
+          isDisabled={formsCompletion.length < 3}
           onClick={() => {
-            setNumberOfPlayers(numberOfPlayers - 1);
+            const playersArray = [...formsCompletion];
+            playersArray.pop();
+            setFormsCompletion(playersArray);
           }}
         >
           -
         </Button>
       </Flex>
-      {makeArrayOfPlayers().map((player) => {
-        return (
+      {formsCompletion.map((player, idx) => {
+        return idx > 0 ? (
           <PlayerInputRow
-            key={player}
-            playerNumber={player}
+            key={idx}
+            playerNumber={idx}
             recentPlayers={recentPlayers}
             setRecentPlayers={setRecentPlayers}
+            formsCompletion={formsCompletion}
+            setFormsCompletion={setFormsCompletion}
           />
+        ) : (
+          <Flex key={idx}></Flex>
         );
       })}
-      BUTTON FOR SUBMIT
+      <Flex justifyContent="center" mt="5px">
+        <Button
+          width="100px"
+          colorScheme="purple"
+          isDisabled={formsCompletion.indexOf(false) > -1}
+        >
+          Finalize
+        </Button>
+      </Flex>
+      {JSON.stringify(formsCompletion)}
     </Flex>
   );
 };
