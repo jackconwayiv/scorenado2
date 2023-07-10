@@ -1,4 +1,10 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Button,
   Flex,
   Heading,
@@ -8,8 +14,9 @@ import {
   Tag,
   Wrap,
   WrapItem,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PlayerInputRow from "./PlayerInputRow";
 
 const InputForm = () => {
@@ -41,6 +48,10 @@ const InputForm = () => {
   ];
 
   const [recentPlayers, setRecentPlayers] = useState<any>(myRecentPlayers);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const cancelRef = React.useRef<HTMLButtonElement | null>(null);
 
   const game_object = {
     id: 1,
@@ -227,11 +238,37 @@ const InputForm = () => {
           width="100px"
           colorScheme="purple"
           isDisabled={formsCompletion.indexOf(false) > -1}
+          onClick={onOpen}
         >
           Finalize
         </Button>
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Submit Game Scores
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                Are you ready to commit this game to the records?
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onClose}>
+                  Review
+                </Button>
+                <Button colorScheme="purple" onClick={onClose} ml={3}>
+                  Submit
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
       </Flex>
-      {JSON.stringify(formsCompletion)}
     </Flex>
   );
 };
