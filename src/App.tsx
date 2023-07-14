@@ -12,12 +12,13 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
+import { ImExit } from "react-icons/im";
 import "./App.css";
 import InputForm from "./components/InputForm";
 
 const supabase = createClient(
-  process.env.SUPABASE_URL || "",
-  process.env.SUPABASE_ANON_KEY || ""
+  `https://zbmqjerscayutssmwkmm.supabase.co`,
+  `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpibXFqZXJzY2F5dXRzc213a21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM2NDc3NzAsImV4cCI6MTk5OTIyMzc3MH0.GAC_0ezrcWgIMlJKCm99UjChJpledSM1KKXCRLBqlPw`
 );
 
 function App() {
@@ -76,7 +77,9 @@ function App() {
               </TabPanel>
             </TabPanels>
           </Tabs>
-          <Button onClick={handleLogOut}>Log Out</Button>
+          <Button padding="0" onClick={handleLogOut}>
+            <ImExit />
+          </Button>
         </Flex>
       </Flex>
     );
