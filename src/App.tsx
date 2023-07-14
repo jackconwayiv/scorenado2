@@ -71,7 +71,7 @@ function App() {
                 <Scores />
               </TabPanel>
               <TabPanel>
-                <Admin />
+                <Admin supabase={supabase} />
               </TabPanel>
             </TabPanels>
           </Tabs>

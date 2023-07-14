@@ -101,13 +101,13 @@ const InputForm = ({ supabase }: InputFormProps) => {
   // };
 
   // this simulates an array of game objects fetched from api
-  // const myRecentGames = [
-  //   { id: 1, name: "Spirit Island", qty: 8 },
-  //   { id: 2, name: "Dominion", qty: 7 },
-  //   { id: 3, name: "Wingspan", qty: 5 },
-  //   { id: 4, name: "Race for the Galaxy", qty: 1 },
-  //   { id: 5, name: "Azul", qty: 3 },
-  // ];
+  const myRecentGames = [
+    { id: 1, name: "Spirit Island", qty: 8 },
+    { id: 2, name: "Dominion", qty: 7 },
+    { id: 3, name: "Wingspan", qty: 5 },
+    { id: 4, name: "Race for the Galaxy", qty: 1 },
+    { id: 5, name: "Azul", qty: 3 },
+  ];
 
   const handleDateChange = (assignedDate: string) => {
     if (assignedDate <= dateOfToday) {
@@ -162,7 +162,7 @@ const InputForm = ({ supabase }: InputFormProps) => {
         <Flex mt="5px" justifyContent="center">
           <Wrap>
             {game === "" &&
-              myGames.map((game: any) => {
+              myRecentGames.map((game: any) => {
                 return (
                   <WrapItem key={game.id}>
                     <Tag
