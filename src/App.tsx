@@ -1,5 +1,4 @@
 import {
-  Button,
   Flex,
   Heading,
   Tab,
@@ -12,9 +11,12 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
-import { ImExit } from "react-icons/im";
+
 import "./App.css";
+import Admin from "./components/Admin";
 import InputForm from "./components/InputForm";
+import MyProfile from "./components/MyProfile";
+import Scores from "./components/Scores";
 
 const supabase = createClient(
   `https://zbmqjerscayutssmwkmm.supabase.co`,
@@ -38,11 +40,6 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.error(error);
-  };
-
   if (!session) {
     return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />;
   } else {
@@ -51,35 +48,33 @@ function App() {
         <Heading size="4xl">Scorenado</Heading>
         <Flex width="400px" mt="20px" justifyContent="center">
           <Tabs
-            isFitted
+            size="sm"
+            align="center"
             width="400px"
             variant="solid-rounded"
             colorScheme="purple"
           >
             <TabList mb="1em">
-              <Tab>Input</Tab>
-              <Tab>Profile</Tab>
-              <Tab>Scores</Tab>
-              <Tab>Calendar</Tab>
+              <Tab width="90px">Input</Tab>
+              <Tab width="90px">Profile</Tab>
+              <Tab width="90px">Scores</Tab>
+              <Tab width="90px">Admin</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
-                <InputForm />
+                <InputForm supabase={supabase} />
               </TabPanel>
               <TabPanel>
-                <p>profile!</p>
+                <MyProfile supabase={supabase} />
               </TabPanel>
               <TabPanel>
-                <p>data!</p>
+                <Scores />
               </TabPanel>
               <TabPanel>
-                <p>calendar!</p>
+                <Admin />
               </TabPanel>
             </TabPanels>
           </Tabs>
-          <Button padding="0" onClick={handleLogOut}>
-            <ImExit />
-          </Button>
         </Flex>
       </Flex>
     );

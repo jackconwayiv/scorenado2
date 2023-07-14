@@ -19,9 +19,14 @@ import {
 import React, { useEffect, useState } from "react";
 import PlayerInputRow from "./PlayerInputRow";
 
-const InputForm = () => {
+interface InputFormProps {
+  supabase: any;
+}
+
+const InputForm = ({ supabase }: InputFormProps) => {
   const [game, setGame] = useState<string>("");
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
+  const [myGames, setMyGames] = useState<any>([]);
 
   //formsCompletion is an array of booleans with length equal to one more than the number of players.
   //The index of each bool in formsCompletion represents the player, with the 0th being the game form.
@@ -33,9 +38,21 @@ const InputForm = () => {
 
   const dateOfToday = new Date().toISOString().substring(0, 10);
 
+  const fetchRecentGames = async () => {
+    //currently this is just all games, will change to your 5 most played games, and will also need to fetch # of times that game appears (array.length?)
+    try {
+      let { data: games } = await supabase.from("games").select("id,name");
+      if (games.length > 0) setMyGames(games);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    console.log("firing useeffect");
     const todaysDate = new Date().toISOString().substring(0, 10);
     setDateOfGame(todaysDate);
+    fetchRecentGames();
   }, []);
 
   // this is an array of profile objects fetched from api
@@ -83,14 +100,14 @@ const InputForm = () => {
   //   // player_id: 1, //may not need, but if so, check to see if this player is already in db
   // };
 
-  // this is an array of game objects fetched from api
-  const myRecentGames = [
-    { id: 1, name: "Spirit Island", qty: 8 },
-    { id: 2, name: "Dominion", qty: 7 },
-    { id: 3, name: "Wingspan", qty: 5 },
-    { id: 4, name: "Race for the Galaxy", qty: 1 },
-    { id: 5, name: "Azul", qty: 3 },
-  ];
+  // this simulates an array of game objects fetched from api
+  // const myRecentGames = [
+  //   { id: 1, name: "Spirit Island", qty: 8 },
+  //   { id: 2, name: "Dominion", qty: 7 },
+  //   { id: 3, name: "Wingspan", qty: 5 },
+  //   { id: 4, name: "Race for the Galaxy", qty: 1 },
+  //   { id: 5, name: "Azul", qty: 3 },
+  // ];
 
   const handleDateChange = (assignedDate: string) => {
     if (assignedDate <= dateOfToday) {
@@ -145,7 +162,7 @@ const InputForm = () => {
         <Flex mt="5px" justifyContent="center">
           <Wrap>
             {game === "" &&
-              myRecentGames.map((game) => {
+              myGames.map((game: any) => {
                 return (
                   <WrapItem key={game.id}>
                     <Tag
@@ -185,7 +202,7 @@ const InputForm = () => {
         </Flex>
       </Flex>
       <Flex justifyContent="center" mb="5px">
-      <Button
+        <Button
           mt="5px"
           size="sm"
           bgColor="red.400"
