@@ -53,6 +53,7 @@ function App() {
             width="400px"
             variant="solid-rounded"
             colorScheme="purple"
+            isLazy={true}
           >
             <TabList mb="1em">
               <Tab width="90px">Input</Tab>
@@ -68,7 +69,7 @@ function App() {
                 <MyProfile supabase={supabase} />
               </TabPanel>
               <TabPanel>
-                <Scores />
+                <Scores supabase={supabase} />
               </TabPanel>
               <TabPanel>
                 <Admin supabase={supabase} />
