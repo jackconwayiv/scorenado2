@@ -80,12 +80,12 @@ const PlayerInputRow = ({
               size="xs"
               m="5px"
               onClick={() => {
-                const newPointsValue = points ? points + 1 : 1;
+                const newPointsValue = points ? points - 1 : -1;
                 setPoints(newPointsValue);
                 setDisplayPoints(newPointsValue.toString());
               }}
             >
-              +
+              -
             </Button>
           </InputLeftElement>
           <Input
@@ -114,12 +114,12 @@ const PlayerInputRow = ({
               size="xs"
               m="5px"
               onClick={() => {
-                const newPointsValue = points ? points - 1 : -1;
+                const newPointsValue = points ? points + 1 : 1;
                 setPoints(newPointsValue);
                 setDisplayPoints(newPointsValue.toString());
               }}
             >
-              -
+              +
             </Button>
           </InputRightElement>
         </InputGroup>

@@ -21,8 +21,8 @@ interface TagInputRowProps {
 }
 
 const TagInputRow = ({ name, winning, setWinning }: TagInputRowProps) => {
-  const result_id = 1;
-  const game_id = 1;
+  // const result_id = 1;
+  // const game_id = 1;
 
   const [tag, setTag] = useState<string | null>(null);
   const [tagArray, setTagArray] = useState<string[]>([]);

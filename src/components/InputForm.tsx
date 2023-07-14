@@ -23,8 +23,8 @@ const InputForm = () => {
   const [game, setGame] = useState<string>("");
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
 
-  //formsCompletion is an array of booleans with length equal to one more than the number of players
-  //the index of each bool in formsCompletion represents the player, with the 0th being the game form
+  //formsCompletion is an array of booleans with length equal to one more than the number of players.
+  //The index of each bool in formsCompletion represents the player, with the 0th being the game form.
   const [formsCompletion, setFormsCompletion] = useState<boolean[]>([
     false,
     false,
@@ -53,35 +53,35 @@ const InputForm = () => {
 
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
 
-  const game_object = {
-    id: 1,
-    name: "Spirit Island",
-  };
-  const session_object = {
-    id: 1,
-    game_id: 1,
-    date_played: "dateString",
-  };
-  const result_object = {
-    id: 1,
-    session_id: 1, //get from parent after api call is returned
-    player_id: 1, //check if this player is already in db
-    points: 1,
-    result: "W",
-  };
+  // const game_object = {
+  //   id: 1,
+  //   name: "Spirit Island",
+  // };
+  // const session_object = {
+  //   id: 1,
+  //   game_id: 1,
+  //   date_played: "dateString",
+  // };
+  // const result_object = {
+  //   id: 1,
+  //   session_id: 1, //get from parent after api call is returned
+  //   player_id: 1, //check if this player is already in db
+  //   points: 1,
+  //   result: "W",
+  // };
 
-  const tag_object = {
-    id: 1,
-    game_id: 1,
-    text: "won with relics",
-  };
+  // const tag_object = {
+  //   id: 1,
+  //   game_id: 1,
+  //   text: "won with relics",
+  // };
 
-  const result_tag_object = {
-    id: 1,
-    result_id: 1, //get from parent after api call is returned
-    tag_id: 1, //check to see fi this tag is already in db
-    // player_id: 1, //may not need, but if so, check to see if this player is already in db
-  };
+  // const result_tag_object = {
+  //   id: 1,
+  //   result_id: 1, //get from parent after api call is returned
+  //   tag_id: 1, //check to see fi this tag is already in db
+  //   // player_id: 1, //may not need, but if so, check to see if this player is already in db
+  // };
 
   // this is an array of game objects fetched from api
   const myRecentGames = [
@@ -185,6 +185,25 @@ const InputForm = () => {
         </Flex>
       </Flex>
       <Flex justifyContent="center" mb="5px">
+      <Button
+          mt="5px"
+          size="sm"
+          bgColor="red.400"
+          colorScheme="red"
+          isDisabled={formsCompletion.length < 3}
+          onClick={() => {
+            const playersArray = [...formsCompletion];
+            playersArray.pop();
+            setFormsCompletion(playersArray);
+          }}
+        >
+          -
+        </Button>
+        <Flex alignItems="center" justifyContent="center" width="80px">
+          {formsCompletion.length - 1}{" "}
+          {formsCompletion.length > 2 ? <>players</> : <>player</>}
+        </Flex>
+
         <Button
           mt="5px"
           bgColor="green.400"
@@ -198,25 +217,6 @@ const InputForm = () => {
           }}
         >
           +
-        </Button>
-        <Flex alignItems="center" justifyContent="center" width="80px">
-          {formsCompletion.length - 1}{" "}
-          {formsCompletion.length > 2 ? <>players</> : <>player</>}
-        </Flex>
-
-        <Button
-          mt="5px"
-          size="sm"
-          bgColor="red.400"
-          colorScheme="red"
-          isDisabled={formsCompletion.length < 3}
-          onClick={() => {
-            const playersArray = [...formsCompletion];
-            playersArray.pop();
-            setFormsCompletion(playersArray);
-          }}
-        >
-          -
         </Button>
       </Flex>
       {formsCompletion.map((player, idx) => {
