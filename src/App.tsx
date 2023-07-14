@@ -16,8 +16,8 @@ import "./App.css";
 import InputForm from "./components/InputForm";
 
 const supabase = createClient(
-  `https://zbmqjerscayutssmwkmm.supabase.co`,
-  `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpibXFqZXJzY2F5dXRzc213a21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM2NDc3NzAsImV4cCI6MTk5OTIyMzc3MH0.GAC_0ezrcWgIMlJKCm99UjChJpledSM1KKXCRLBqlPw`
+  process.env.SUPABASE_URL || "",
+  process.env.SUPABASE_ANON_KEY || ""
 );
 
 function App() {
