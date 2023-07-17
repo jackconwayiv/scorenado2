@@ -2,7 +2,7 @@ import { Card, Flex, Heading, Text, Wrap } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
-import InputForm from "./InputForm";
+import CreateSession from "./CreateSession";
 
 interface LandingPageProps {
   supabase: supabaseType;
@@ -31,7 +31,7 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
     <Flex direction="column" alignItems="center">
       <Heading mt="10px">Welcome user!</Heading>
       <Flex mt="5px">Here's your quick stats.</Flex>
-      <InputForm supabase={supabase} user={user} />
+      <CreateSession supabase={supabase} user={user} />
       <Heading size="md" mt="10px">
         My Game Sessions
       </Heading>

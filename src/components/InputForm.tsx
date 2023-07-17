@@ -226,6 +226,9 @@ const InputForm = ({ supabase, user }: InputFormProps) => {
           </Button>
         )}
       </Flex>
+
+{/* THIS IS WHERE THE BREAK HAPPENS BETWEEN SESSION AND PLAYERS */}
+
       {sessionId && (
         <Flex justifyContent="center" mb="5px">
           <Button
