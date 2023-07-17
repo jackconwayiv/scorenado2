@@ -20,14 +20,10 @@ interface InputFormProps {
 
 const InputForm = ({ supabase }: InputFormProps) => {
   const [game, setGame] = useState<string>("");
-  const [gameId, setGameId] = useState<string | null>(
-    "b8ee7877-7572-4747-a7f1-51a407d71e58"
-  );
+  const [gameId, setGameId] = useState<string | null>(null);
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
   const [myGames, setMyGames] = useState<any>([]);
-  const [sessionId, setSessionId] = useState<string | null>(
-    "217bf8f0-0d2a-4eea-b5d7-b2d419fd6ba5"
-  );
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const toast = useToast();
   //formsCompletion is an array of booleans with length equal to one more than the number of players.
   //The index of each bool in formsCompletion represents the player, with the 0th being the game form.

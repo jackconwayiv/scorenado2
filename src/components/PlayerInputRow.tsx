@@ -31,15 +31,11 @@ const PlayerInputRow = ({
   sessionId,
 }: PlayerInputRowProps) => {
   const [name, setName] = useState<string>("");
-  const [playerId, setPlayerId] = useState<string | null>(
-    "bfd09774-09d8-4d8a-84e2-3ff46c6f5cec"
-  );
+  const [playerId, setPlayerId] = useState<string | null>(null);
   const [points, setPoints] = useState<number | null>(null);
   const [displayPoints, setDisplayPoints] = useState<string>("");
   const [isWinner, setIsWinner] = useState<boolean>(false);
-  const [resultId, setResultId] = useState<string | null>(
-    "53d9132c-b892-446d-b7ba-9b33b4dc648c"
-  );
+  const [resultId, setResultId] = useState<string | null>(null);
   const toast = useToast();
 
   // this is an array of player objects fetched from api

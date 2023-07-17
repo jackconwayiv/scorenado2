@@ -10,6 +10,7 @@ import {
   TagLabel,
   TagLeftIcon,
   Wrap,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { AiFillTag, AiOutlineTag } from "react-icons/ai";
@@ -26,13 +27,13 @@ const TagInputRow = ({
   gameId,
   supabase,
 }: TagInputRowProps) => {
-  // const result_id = 1;
-  // const game_id = 1;
-
-  const [tag, setTag] = useState<string | null>(null);
-  const [tagArray, setTagArray] = useState<string[]>([]);
+  const [newTagName, setNewTagName] = useState<string | null>(null);
+  const [appliedTags, setAppliedTags] = useState<any>([]);
   const [tagOptions, setTagOptions] = useState<any>([]);
-
+  const [arrayOfAppliedTagIDs, setArrayOfAppliedTagIDs] = useState<number[]>(
+    []
+  );
+  const toast = useToast();
   useEffect(() => {
     console.log("firing tags useEffect");
     const fetchTagsForGame = async () => {
@@ -42,7 +43,6 @@ const TagInputRow = ({
           .select("*")
           .eq("game_id", gameId);
         setTagOptions(fetchedTags);
-        console.dir(fetchedTags);
       } catch (error) {
         console.error(error);
       }
@@ -52,35 +52,79 @@ const TagInputRow = ({
     }
   }, [gameId, supabase]);
 
-  const removeTag = (tagToRemove: string) => {
-    const extractionIndex = tagArray.indexOf(tagToRemove);
-    const tagArrayCopy = [...tagArray];
-    tagArrayCopy.splice(extractionIndex, 1);
-    setTagArray(tagArrayCopy);
-  };
-
-  const addTag = (tagToAdd: string) => {
-    if (tagToAdd.length < 1) {
-      return;
-    }
-    const tagArrayCopy = [...tagArray];
-    tagArrayCopy.push(tagToAdd);
-    setTagArray(tagArrayCopy);
-    setTag(null);
-  };
-
-  const handleTagAdd = async () => {
+  const removeTagFromResult = async (tagIdToRemove: number) => {
     try {
+      await supabase
+        .from("result_tags")
+        .delete()
+        .select()
+        .match({ result_id: resultId, tag_id: tagIdToRemove });
+      const newAppliedTags = appliedTags.filter(
+        (tag: any) => tag.id !== tagIdToRemove
+      );
+      setAppliedTags(newAppliedTags);
+      const newArrayOfAppliedTagIDs = newAppliedTags.map((tag: any) => tag.id);
+      setArrayOfAppliedTagIDs(newArrayOfAppliedTagIDs);
     } catch (error) {
       console.error(error);
+      toast({
+        title: "There was an error...",
+        description: `${error}`,
+        status: "error",
+        duration: 10000,
+        position: "top",
+        isClosable: true,
+      });
+    }
+  };
+
+  const saveTag = async (tagNameToQuery: string) => {
+    if (tagNameToQuery.length < 1) {
+      return;
+    }
+    try {
+      let tagToSave = { id: null };
+      let { data: fetchedTag } = await supabase
+        .from("tags")
+        .select("*")
+        .eq("name", tagNameToQuery)
+        .limit(1);
+      if (fetchedTag.length === 0) {
+        const { data: createdTag } = await supabase
+          .from("tags")
+          .insert([{ name: tagNameToQuery, game_id: gameId }])
+          .select();
+        tagToSave = createdTag[0];
+      } else {
+        tagToSave = fetchedTag[0];
+      }
+      await supabase
+        .from("result_tags")
+        .insert([{ result_id: resultId, tag_id: tagToSave.id }])
+        .select();
+      const newArrayOfTags = [...appliedTags, tagToSave];
+      setAppliedTags(newArrayOfTags);
+      const newArrayOfAppliedTagIDs = newArrayOfTags.map((tag: any) => tag.id);
+      setArrayOfAppliedTagIDs(newArrayOfAppliedTagIDs);
+      setNewTagName(null);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "There was an error...",
+        description: `${error}`,
+        status: "error",
+        duration: 10000,
+        position: "top",
+        isClosable: true,
+      });
     }
   };
 
   return (
     <Flex direction="column" mt="5px">
       <Wrap>
-        {tagArray.length > 0 &&
-          tagArray.map((mappedTag: string, idx: number) => {
+        {appliedTags.length > 0 &&
+          appliedTags.map((mappedTag: any, idx: number) => {
             return (
               <Tag
                 size="sm"
@@ -90,8 +134,10 @@ const TagInputRow = ({
                 key={idx}
               >
                 <TagLeftIcon boxSize="12px" as={AiFillTag} />
-                <TagLabel>{mappedTag}</TagLabel>
-                <TagCloseButton onClick={() => removeTag(mappedTag)} />
+                <TagLabel>{mappedTag.name}</TagLabel>
+                <TagCloseButton
+                  onClick={() => removeTagFromResult(mappedTag.id)}
+                />
               </Tag>
             );
           })}
@@ -106,18 +152,18 @@ const TagInputRow = ({
             Tags
           </InputLeftElement>
           <Input
-            value={tag || ""}
+            value={newTagName || ""}
             bgColor="white"
             onChange={(e) => {
-              if (e.target.value.length < 31) setTag(e.target.value);
+              if (e.target.value.length < 31) setNewTagName(e.target.value);
             }}
-            onBlur={(e) => addTag(e.target.value)}
+            onBlur={(e) => saveTag(e.target.value)}
           />
           <InputRightElement>
             <Button
-              isDisabled={!tag}
+              isDisabled={!newTagName}
               size="xs"
-              onClick={() => tag && addTag(tag)}
+              onClick={() => newTagName && saveTag(newTagName)}
             >
               +
             </Button>
@@ -127,24 +173,27 @@ const TagInputRow = ({
       <Flex mt="5px" justifyContent="center">
         <Wrap>
           {tagOptions.length > 0 &&
-            tagOptions.map((availableTag: any, idx: number) => {
-              return tagArray.indexOf(availableTag.name) !== -1 ? (
-                <Tag
-                  size="sm"
-                  key={idx}
-                  variant="subtle"
-                  colorScheme="gray"
-                  cursor="pointer"
-                  // onClick={() => addTag(availableTag)}
-                >
-                  {" "}
-                  <TagLeftIcon boxSize="12px" as={AiOutlineTag} />
-                  <TagLabel>{availableTag.name}</TagLabel>
-                </Tag>
-              ) : (
-                <></>
-              );
-            })}
+            tagOptions
+              .filter(
+                (tagObject: any) =>
+                  arrayOfAppliedTagIDs.indexOf(tagObject.id) === -1
+              )
+              .map((availableTag: any, idx: number) => {
+                return (
+                  <Tag
+                    size="sm"
+                    key={idx}
+                    variant="subtle"
+                    colorScheme="gray"
+                    cursor="pointer"
+                    onClick={() => saveTag(availableTag.name)}
+                  >
+                    {" "}
+                    <TagLeftIcon boxSize="12px" as={AiOutlineTag} />
+                    <TagLabel>{availableTag.name}</TagLabel>
+                  </Tag>
+                );
+              })}
         </Wrap>
       </Flex>
     </Flex>
