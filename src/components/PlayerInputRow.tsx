@@ -73,12 +73,11 @@ const PlayerInputRow = ({
           const { data } = await supabase.auth.getSession();
           const fetchedUser = data.session.user;
 
-          let { data: fetchedPlayers } = await supabase
+          let { data: fetchedPlayer } = await supabase
             .from("players")
             .select("*")
             .eq("profile_id", fetchedUser.id);
-          console.dir(fetchedPlayers);
-          const fetchedNickname = fetchedPlayers[0].name;
+          const fetchedNickname = fetchedPlayer[0].name;
           setName(fetchedNickname);
         } catch (error) {
           console.error(error);

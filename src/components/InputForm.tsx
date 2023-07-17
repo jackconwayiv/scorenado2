@@ -46,7 +46,7 @@ const InputForm = ({ supabase }: InputFormProps) => {
   };
 
   useEffect(() => {
-    console.log("firing useeffect");
+    console.log("firing input form useeffect");
     const todaysDate = new Date().toISOString().substring(0, 10);
     setDateOfGame(todaysDate);
     fetchRecentGames();
