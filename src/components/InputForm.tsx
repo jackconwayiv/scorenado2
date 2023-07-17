@@ -1,10 +1,5 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
+  Badge,
   Button,
   Flex,
   Heading,
@@ -15,23 +10,29 @@ import {
   Wrap,
   WrapItem,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import PlayerInputRow from "./PlayerInputRow";
-
 interface InputFormProps {
   supabase: any;
 }
 
 const InputForm = ({ supabase }: InputFormProps) => {
   const [game, setGame] = useState<string>("");
+  const [gameId, setGameId] = useState<string | null>(
+    "b8ee7877-7572-4747-a7f1-51a407d71e58"
+  );
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
   const [myGames, setMyGames] = useState<any>([]);
-
+  const [sessionId, setSessionId] = useState<string | null>(
+    "217bf8f0-0d2a-4eea-b5d7-b2d419fd6ba5"
+  );
+  const toast = useToast();
   //formsCompletion is an array of booleans with length equal to one more than the number of players.
   //The index of each bool in formsCompletion represents the player, with the 0th being the game form.
+  //This is not maximally useful until I refactor to handle all submits at once.
   const [formsCompletion, setFormsCompletion] = useState<boolean[]>([
-    false,
     false,
     false,
   ]);
@@ -54,17 +55,6 @@ const InputForm = ({ supabase }: InputFormProps) => {
     setDateOfGame(todaysDate);
     fetchRecentGames();
   }, []);
-
-  // this is an array of profile objects fetched from api
-  const myRecentPlayers = [
-    { id: 1, name: "Alan" },
-    { id: 2, name: "Betty" },
-    { id: 3, name: "Chuck" },
-    { id: 4, name: "Diana" },
-    { id: 5, name: "Eddie" },
-  ];
-
-  const [recentPlayers, setRecentPlayers] = useState<any>(myRecentPlayers);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -133,13 +123,63 @@ const InputForm = ({ supabase }: InputFormProps) => {
     setFormsCompletion(newCompletion);
   };
 
+  const saveSession = async () => {
+    try {
+      let gameIdToSave = "";
+      let { data: fetchedGame } = await supabase
+        .from("games")
+        .select("*")
+        .eq("name", game)
+        .limit(1);
+      if (fetchedGame.length === 0) {
+        const { data: createdGame } = await supabase
+          .from("games")
+          .insert([{ name: game }])
+          .select();
+        gameIdToSave = createdGame[0].id;
+      } else {
+        gameIdToSave = fetchedGame[0].id;
+      }
+      setGameId(gameIdToSave);
+      const { data: savedSession } = await supabase
+        .from("sessions")
+        .insert([{ game_id: gameIdToSave, date_played: dateOfGame }])
+        .select();
+      const seshId = savedSession[0].id;
+      setSessionId(seshId);
+      toast({
+        title: "Game session is created!",
+        description: "Now continue by adding players!",
+        status: "success",
+        duration: 5000,
+        position: "top",
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "There was an error...",
+        description: `${error}`,
+        status: "error",
+        duration: 10000,
+        position: "top",
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Flex direction="column" width="390px">
       <Heading size="lg" mb="10px">
         Input New Game Scores
       </Heading>
       <Flex direction="column" p="5px" width="390px">
-        <Flex>
+        {!sessionId && (
+          <Badge alignSelf="center" width="200px" colorScheme={`red`}>
+            Enter Game Session Details
+          </Badge>
+        )}
+        <Flex mt="5px">
           <InputGroup>
             <InputLeftElement
               pointerEvents="none"
@@ -149,6 +189,7 @@ const InputForm = ({ supabase }: InputFormProps) => {
             />
             <Input
               value={game}
+              isDisabled={sessionId !== null}
               onChange={(e) => {
                 handleGameInput(e.target.value);
               }}
@@ -194,63 +235,85 @@ const InputForm = ({ supabase }: InputFormProps) => {
               mr="10px"
               bgColor="white"
               type="date"
+              isDisabled={sessionId !== null}
               textAlign="center"
               value={dateOfGame ? dateOfGame : dateOfToday}
               onChange={(e) => handleDateChange(e.target.value)}
             />
           </InputGroup>
         </Flex>
+        {!sessionId && (
+          <Button
+            alignSelf="center"
+            mt="5px"
+            width="100px"
+            size="sm"
+            isDisabled={!game}
+            colorScheme="purple"
+            onClick={saveSession}
+          >
+            Add Players
+          </Button>
+        )}
       </Flex>
-      <Flex justifyContent="center" mb="5px">
-        <Button
-          mt="5px"
-          size="sm"
-          bgColor="red.400"
-          colorScheme="red"
-          isDisabled={formsCompletion.length < 3}
-          onClick={() => {
-            const playersArray = [...formsCompletion];
-            playersArray.pop();
-            setFormsCompletion(playersArray);
-          }}
-        >
-          -
-        </Button>
-        <Flex alignItems="center" justifyContent="center" width="80px">
-          {formsCompletion.length - 1}{" "}
-          {formsCompletion.length > 2 ? <>players</> : <>player</>}
-        </Flex>
+      {sessionId && (
+        <Flex justifyContent="center" mb="5px">
+          <Button
+            mt="5px"
+            size="sm"
+            bgColor="red.400"
+            colorScheme="red"
+            isDisabled={formsCompletion.length < 3}
+            onClick={() => {
+              const playersArray = [...formsCompletion];
+              playersArray.pop();
+              setFormsCompletion(playersArray);
+            }}
+          >
+            -
+          </Button>
+          <Flex alignItems="center" justifyContent="center" width="80px">
+            {formsCompletion.length - 1}{" "}
+            {formsCompletion.length > 2 ? <>players</> : <>player</>}
+          </Flex>
 
-        <Button
-          mt="5px"
-          bgColor="green.400"
-          size="sm"
-          colorScheme="green"
-          isDisabled={formsCompletion.length > 6}
-          onClick={() => {
-            const playersArray = [...formsCompletion];
-            playersArray.push(false);
-            setFormsCompletion(playersArray);
-          }}
-        >
-          +
-        </Button>
-      </Flex>
-      {formsCompletion.map((player, idx) => {
-        return idx > 0 ? (
-          <PlayerInputRow
-            key={idx}
-            playerNumber={idx}
-            recentPlayers={recentPlayers}
-            setRecentPlayers={setRecentPlayers}
-            formsCompletion={formsCompletion}
-            setFormsCompletion={setFormsCompletion}
-          />
-        ) : (
-          <Flex key={idx}></Flex>
-        );
-      })}
-      <Flex justifyContent="center" mt="5px">
+          <Button
+            mt="5px"
+            bgColor="green.400"
+            size="sm"
+            colorScheme="green"
+            isDisabled={formsCompletion.length > 6}
+            onClick={() => {
+              const playersArray = [...formsCompletion];
+              playersArray.push(false);
+              setFormsCompletion(playersArray);
+            }}
+          >
+            +
+          </Button>
+        </Flex>
+      )}
+      {sessionId && (
+        <>
+          {formsCompletion.map((player, idx) => {
+            return idx > 0 ? (
+              <PlayerInputRow
+                key={idx}
+                gameId={gameId}
+                playerNumber={idx}
+                supabase={supabase}
+                formsCompletion={formsCompletion}
+                setFormsCompletion={setFormsCompletion}
+                sessionId={sessionId}
+              />
+            ) : (
+              <Flex key={idx}></Flex>
+            );
+          })}
+        </>
+      )}
+      {/* This part is only useful when I refactor to allow saving the whole thing at once: */}
+      {/* <Flex justifyContent="center" mt="5px">
         <Button
           width="100px"
           colorScheme="purple"
@@ -285,7 +348,7 @@ const InputForm = ({ supabase }: InputFormProps) => {
             </AlertDialogContent>
           </AlertDialogOverlay>
         </AlertDialog>
-      </Flex>
+      </Flex> */}
     </Flex>
   );
 };

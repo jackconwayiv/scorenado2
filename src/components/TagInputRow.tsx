@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Flex,
   Input,
   InputGroup,
@@ -12,28 +11,46 @@ import {
   TagLeftIcon,
   Wrap,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiFillTag, AiOutlineTag } from "react-icons/ai";
 interface TagInputRowProps {
-  name: string;
-  winning: boolean;
-  setWinning: any;
+  playerId: string | null;
+  resultId: string | null;
+  gameId: string | null;
+  supabase: any;
 }
 
-const TagInputRow = ({ name, winning, setWinning }: TagInputRowProps) => {
+const TagInputRow = ({
+  playerId,
+  resultId,
+  gameId,
+  supabase,
+}: TagInputRowProps) => {
   // const result_id = 1;
   // const game_id = 1;
 
   const [tag, setTag] = useState<string | null>(null);
   const [tagArray, setTagArray] = useState<string[]>([]);
+  const [tagOptions, setTagOptions] = useState<any>([]);
 
-  const availableTagArray = [
-    "white boy",
-    "got Avatar",
-    "tier III",
-    "tier II",
-    "tier I",
-  ];
+  useEffect(() => {
+    console.log("firing tags useEffect");
+    const fetchTagsForGame = async () => {
+      try {
+        let { data: fetchedTags } = await supabase
+          .from("tags")
+          .select("*")
+          .eq("game_id", gameId);
+        setTagOptions(fetchedTags);
+        console.dir(fetchedTags);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (gameId !== null) {
+      fetchTagsForGame();
+    }
+  }, [gameId, supabase]);
 
   const removeTag = (tagToRemove: string) => {
     const extractionIndex = tagArray.indexOf(tagToRemove);
@@ -50,6 +67,13 @@ const TagInputRow = ({ name, winning, setWinning }: TagInputRowProps) => {
     tagArrayCopy.push(tagToAdd);
     setTagArray(tagArrayCopy);
     setTag(null);
+  };
+
+  const handleTagAdd = async () => {
+    try {
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -83,7 +107,6 @@ const TagInputRow = ({ name, winning, setWinning }: TagInputRowProps) => {
           </InputLeftElement>
           <Input
             value={tag || ""}
-            width="275px"
             bgColor="white"
             onChange={(e) => {
               if (e.target.value.length < 31) setTag(e.target.value);
@@ -100,35 +123,26 @@ const TagInputRow = ({ name, winning, setWinning }: TagInputRowProps) => {
             </Button>
           </InputRightElement>
         </InputGroup>
-        <Checkbox
-          isDisabled={!name}
-          isChecked={winning}
-          mr="10px"
-          colorScheme="purple"
-          onChange={() => setWinning(!winning)}
-        >
-          Winner
-        </Checkbox>
       </Flex>
       <Flex mt="5px" justifyContent="center">
         <Wrap>
-          {availableTagArray.length > 0 &&
-            availableTagArray.map((availableTag: string, idx: number) => {
-              return tagArray.indexOf(availableTag) === -1 ? (
+          {tagOptions.length > 0 &&
+            tagOptions.map((availableTag: any, idx: number) => {
+              return tagArray.indexOf(availableTag.name) !== -1 ? (
                 <Tag
                   size="sm"
                   key={idx}
                   variant="subtle"
                   colorScheme="gray"
                   cursor="pointer"
-                  onClick={() => addTag(availableTag)}
+                  // onClick={() => addTag(availableTag)}
                 >
                   {" "}
                   <TagLeftIcon boxSize="12px" as={AiOutlineTag} />
-                  <TagLabel>{availableTag}</TagLabel>
+                  <TagLabel>{availableTag.name}</TagLabel>
                 </Tag>
               ) : (
-                <Flex key={idx}></Flex>
+                <></>
               );
             })}
         </Wrap>

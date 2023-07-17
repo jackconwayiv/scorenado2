@@ -59,7 +59,9 @@ function App() {
               <Tab width="90px">Input</Tab>
               <Tab width="90px">Profile</Tab>
               <Tab width="90px">Scores</Tab>
-              <Tab width="90px">Admin</Tab>
+              <Tab width="90px" isDisabled={true}>
+                Admin
+              </Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
