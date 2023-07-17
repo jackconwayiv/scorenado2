@@ -13,7 +13,9 @@ const MyProfile = ({ supabase, user }: MyProfileProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      <Heading mt="5px">My Profile</Heading>
+      <Heading mt="5px" size="lg">
+        My Profile
+      </Heading>
       <Flex direction="column" alignItems="center" mt="20px">
         {user && user.id && (
           <Flex direction="column" alignItems="center" mt="5px">

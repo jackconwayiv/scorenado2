@@ -30,8 +30,8 @@ const EditSession = ({ supabase }: EditSessionProps) => {
   }, []);
 
   return (
-    <Flex>
-      <Heading>Edit Session</Heading>
+    <Flex direction="column" alignItems="center">
+      <Heading size="lg">Edit Session</Heading>
       <Flex>{JSON.stringify(session, null, 4)}</Flex>
     </Flex>
   );

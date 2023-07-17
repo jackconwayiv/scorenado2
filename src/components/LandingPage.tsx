@@ -1,5 +1,7 @@
-import { Card, Flex, Heading, Text, Wrap } from "@chakra-ui/react";
+import { Card, Divider, Flex, Heading, Text, Wrap } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { GiLaurelsTrophy } from "react-icons/gi";
+import { LuDices } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
 import CreateSession from "./CreateSession";
@@ -29,10 +31,27 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      <Heading mt="10px">Welcome user!</Heading>
-      <Flex mt="5px">Here's your quick stats.</Flex>
+      <Heading mt="10px" size="lg">
+        Welcome {user.user_metadata.name}!
+      </Heading>
+      {/* ADD A COMPONENT HERE FOR QUICK STATS */}
+      <Flex
+        width="350px"
+        mt="5px"
+        direction="row"
+        justifyContent="space-between"
+      >
+        <Flex>
+          <GiLaurelsTrophy /> Victories: 0
+        </Flex>{" "}
+        <Flex>
+          <LuDices /> Sessions Played: 0
+        </Flex>
+      </Flex>
+      <Divider m="10px" />
       <CreateSession supabase={supabase} user={user} />
-      <Heading size="md" mt="10px">
+      <Divider m="10px" />
+      <Heading size="lg" mt="10px">
         My Game Sessions
       </Heading>
       <Wrap>

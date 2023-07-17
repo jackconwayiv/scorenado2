@@ -1,13 +1,36 @@
-import { Flex, Heading, Tab, TabList, Tabs } from "@chakra-ui/react";
+import { Avatar, Flex, Heading, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import HamburgerMenu from "./HamburgerMenu";
 
-const Navbar = () => {
+interface NavbarProps {
+  user: any;
+}
+
+const Navbar = ({ user }: NavbarProps) => {
   const navigate = useNavigate();
   return (
-    <Flex width="405px" direction="column" alignItems="center">
-      <Heading onClick={() => navigate(`/`)} size="4xl">
-        Scorenado
-      </Heading>
+    <Flex
+      width="410px"
+      direction="column"
+      alignItems="center"
+      mt="5px"
+      mb="10px"
+    >
+      <Flex direction="row" width="400px" justifyContent="space-between">
+        <Flex m="12px">
+          <HamburgerMenu />
+        </Flex>
+        <Heading onClick={() => navigate(`/`)} size="3xl">
+          Scorenado
+        </Heading>
+        <Avatar
+          m="12px"
+          size="sm"
+          name={user.identities[0].identity_data.full_name}
+          src={user.identities[0].identity_data.avatar_url}
+          referrerPolicy="no-referrer"
+        />
+      </Flex>
       <Flex direction="row" justifyContent="space-around" width="400px">
         <Tabs variant="soft-rounded" colorScheme="purple">
           <TabList>

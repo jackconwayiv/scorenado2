@@ -63,7 +63,7 @@ function App() {
         justifyContent="center"
       >
         <BrowserRouter>
-          <Navbar />
+          <Navbar user={user} />
           <Routes>
             <Route
               path="/"
