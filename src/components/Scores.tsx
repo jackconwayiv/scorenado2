@@ -1,8 +1,9 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import supabaseType from "../resources/types";
 
 interface ScoresProps {
-  supabase: any;
+  supabase: supabaseType;
 }
 
 const Scores = ({ supabase }: ScoresProps) => {
