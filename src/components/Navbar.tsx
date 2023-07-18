@@ -20,7 +20,7 @@ const Navbar = ({ user }: NavbarProps) => {
         <Flex m="12px">
           <HamburgerMenu />
         </Flex>
-        <Heading onClick={() => navigate(`/`)} size="3xl">
+        <Heading cursor="pointer" onClick={() => navigate(`/`)} size="3xl">
           Scorenado
         </Heading>
         <Avatar

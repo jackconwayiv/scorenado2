@@ -44,7 +44,25 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
     if (gameId !== null) {
       fetchTagsForGame();
     }
-  }, [gameId, supabase]);
+    const fetchTagsForPlayer = async () => {
+      try {
+        let { data: result_tags } = await supabase
+          .from("result_tags")
+          .select("*, tags (*)")
+          .eq("result_id", resultId);
+        console.dir(result_tags);
+        const fetchedAppliedTags = result_tags.map(
+          (result_tag: any) => result_tag.tags
+        );
+        setAppliedTags(fetchedAppliedTags);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (resultId !== null) {
+      fetchTagsForPlayer();
+    }
+  }, [gameId, resultId, supabase]);
 
   const removeTagFromResult = async (tagIdToRemove: number) => {
     try {
@@ -77,7 +95,7 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
       return;
     }
     try {
-      let tagToSave = { id: null };
+      let tagToSave;
       let { data: fetchedTag } = await supabase
         .from("tags")
         .select("*")
@@ -152,7 +170,6 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
             onChange={(e) => {
               if (e.target.value.length < 31) setNewTagName(e.target.value);
             }}
-            onBlur={(e) => saveTag(e.target.value)}
           />
           <InputRightElement>
             <Button
