@@ -71,7 +71,7 @@ function App() {
             />
             <Route
               path="session/:sessionId"
-              element={<EditSession supabase={supabase} />}
+              element={<EditSession supabase={supabase} user={user} />}
             />
             <Route
               path="profile"

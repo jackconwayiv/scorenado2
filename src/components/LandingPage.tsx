@@ -51,7 +51,7 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
       <Divider m="10px" />
       <CreateSession supabase={supabase} user={user} />
       <Divider m="10px" />
-      <Heading size="lg" mt="10px">
+      <Heading size="md" mt="10px">
         My Game Sessions
       </Heading>
       <Wrap>

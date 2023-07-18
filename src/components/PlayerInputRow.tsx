@@ -87,6 +87,8 @@ const PlayerInputRow = ({
     fetchUser();
   }, [supabase, playerNumber]);
 
+  // FIRES OFF THE API CALLS TO SAVE A PLAYER THEN SAVE RESULT;
+  // NEEDS TO BE REFACTORED TO NOT BOTHER SAVING A PLAYER
   const saveResult = async () => {
     try {
       let playerIdToSave = "";
@@ -258,6 +260,9 @@ const PlayerInputRow = ({
       >
         Winner
       </Checkbox>
+
+      {/* THIS IS WHERE TAG STUFF STARTS */}
+
       {!resultId && (
         <Button
           alignSelf="center"
@@ -276,7 +281,6 @@ const PlayerInputRow = ({
           <TagInputRow
             gameId={gameId}
             supabase={supabase}
-            playerId={playerId}
             resultId={resultId}
           />
         </>

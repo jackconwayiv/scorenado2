@@ -112,8 +112,8 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
 
   return (
     <Flex direction="column" width="390px">
-      <Heading size="lg" mb="10px" textAlign="center" mt="10px">
-        Input New Game Scores
+      <Heading size="md" mb="5px" textAlign="center" mt="10px">
+        Create New Game Session
       </Heading>
       <Flex direction="column" p="5px" width="390px">
         <Flex mt="5px">
