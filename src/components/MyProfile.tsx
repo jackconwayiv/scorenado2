@@ -1,26 +1,11 @@
 import { Avatar, Button, Flex, Heading, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { ImExit } from "react-icons/im";
+import supabaseType from "../resources/types";
 interface MyProfileProps {
-  supabase: any;
+  supabase: supabaseType;
+  user: any;
 }
-const MyProfile = ({ supabase }: MyProfileProps) => {
-  const [user, setUser] = useState<any>({});
-
-  useEffect(() => {
-    console.log("firing profile useeffect");
-    const fetchUser = async () => {
-      try {
-        const { data} = await supabase.auth.getSession();
-        const fetchedUser = data.session.user;
-        setUser(fetchedUser);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchUser();
-  }, [supabase.auth]);
-
+const MyProfile = ({ supabase, user }: MyProfileProps) => {
   const handleLogOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error(error);
@@ -28,7 +13,9 @@ const MyProfile = ({ supabase }: MyProfileProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      <Heading mt="5px">My Profile</Heading>
+      <Heading mt="5px" size="lg">
+        My Profile
+      </Heading>
       <Flex direction="column" alignItems="center" mt="20px">
         {user && user.id && (
           <Flex direction="column" alignItems="center" mt="5px">

@@ -1,8 +1,9 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import supabaseType from "../resources/types";
 
 interface ScoresProps {
-  supabase: any;
+  supabase: supabaseType;
 }
 
 const Scores = ({ supabase }: ScoresProps) => {
@@ -30,7 +31,7 @@ const Scores = ({ supabase }: ScoresProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      <Heading>Scores and Calendar</Heading>
+      <Heading size="lg">Scores and Calendar</Heading>
       {sessions &&
         sessions.length > 0 &&
         sessions.map((session: any, idx: number) => (

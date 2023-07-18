@@ -1,21 +1,15 @@
-import {
-  Flex,
-  Heading,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
+import { Flex } from "@chakra-ui/react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Admin from "./components/Admin";
-import InputForm from "./components/InputForm";
+import EditSession from "./components/EditSession";
+import LandingPage from "./components/LandingPage";
 import MyProfile from "./components/MyProfile";
+import Navbar from "./components/Navbar";
 import Scores from "./components/Scores";
 
 const supabase = createClient(
@@ -40,45 +34,55 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const [user, setUser] = useState<any>({});
+
+  useEffect(() => {
+    console.log("firing top profile useeffect");
+    const fetchUser = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (data && data.session) {
+          const fetchedUser = data.session.user || {};
+          setUser(fetchedUser);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUser();
+  }, []);
+
   if (!session) {
     return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />;
   } else {
     return (
-      <Flex direction="column" justifyContent="center" alignItems="center">
-        <Heading size="4xl">Scorenado</Heading>
-        <Flex width="400px" mt="20px" justifyContent="center">
-          <Tabs
-            size="sm"
-            align="center"
-            width="400px"
-            variant="solid-rounded"
-            colorScheme="purple"
-            isLazy={true}
-          >
-            <TabList mb="1em">
-              <Tab width="90px">Input</Tab>
-              <Tab width="90px">Profile</Tab>
-              <Tab width="90px">Scores</Tab>
-              <Tab width="90px" isDisabled={true}>
-                Admin
-              </Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <InputForm supabase={supabase} />
-              </TabPanel>
-              <TabPanel>
-                <MyProfile supabase={supabase} />
-              </TabPanel>
-              <TabPanel>
-                <Scores supabase={supabase} />
-              </TabPanel>
-              <TabPanel>
-                <Admin supabase={supabase} />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </Flex>
+      <Flex
+        width="410px"
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <BrowserRouter>
+          <Navbar user={user} />
+          <Routes>
+            <Route
+              path="/"
+              element={<LandingPage supabase={supabase} user={user} />}
+            />
+            <Route
+              path="session/:sessionId"
+              element={<EditSession supabase={supabase} user={user} />}
+            />
+            <Route
+              path="profile"
+              element={<MyProfile supabase={supabase} user={user} />}
+            />
+            <Route
+              path="leaderboard"
+              element={<Scores supabase={supabase} />}
+            />
+          </Routes>
+        </BrowserRouter>
       </Flex>
     );
   }

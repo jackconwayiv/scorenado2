@@ -13,12 +13,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import supabaseType from "../resources/types";
 import PlayerInputRow from "./PlayerInputRow";
 interface InputFormProps {
-  supabase: any;
+  supabase: supabaseType;
+  user: any;
 }
 
-const InputForm = ({ supabase }: InputFormProps) => {
+const InputForm = ({ supabase, user }: InputFormProps) => {
   const [game, setGame] = useState<string>("");
   const [gameId, setGameId] = useState<string | null>(null);
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
@@ -39,7 +41,7 @@ const InputForm = ({ supabase }: InputFormProps) => {
     //currently this is just all games, will change to your 5 most played games, and will also need to fetch # of times that game appears (array.length?)
     try {
       let { data: games } = await supabase.from("games").select("id,name");
-      if (games.length > 0) setMyGames(games);
+      if (games && games.length > 0) setMyGames(games);
     } catch (error) {
       console.error(error);
     }
@@ -55,36 +57,6 @@ const InputForm = ({ supabase }: InputFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const cancelRef = React.useRef<HTMLButtonElement | null>(null);
-
-  // const game_object = {
-  //   id: 1,
-  //   name: "Spirit Island",
-  // };
-  // const session_object = {
-  //   id: 1,
-  //   game_id: 1,
-  //   date_played: "dateString",
-  // };
-  // const result_object = {
-  //   id: 1,
-  //   session_id: 1, //get from parent after api call is returned
-  //   player_id: 1, //check if this player is already in db
-  //   points: 1,
-  //   result: "W",
-  // };
-
-  // const tag_object = {
-  //   id: 1,
-  //   game_id: 1,
-  //   text: "won with relics",
-  // };
-
-  // const result_tag_object = {
-  //   id: 1,
-  //   result_id: 1, //get from parent after api call is returned
-  //   tag_id: 1, //check to see fi this tag is already in db
-  //   // player_id: 1, //may not need, but if so, check to see if this player is already in db
-  // };
 
   // this simulates an array of game objects fetched from api
   const myRecentGames = [
@@ -127,30 +99,32 @@ const InputForm = ({ supabase }: InputFormProps) => {
         .select("*")
         .eq("name", game)
         .limit(1);
-      if (fetchedGame.length === 0) {
+      if (fetchedGame && fetchedGame.length === 0) {
         const { data: createdGame } = await supabase
           .from("games")
           .insert([{ name: game }])
           .select();
-        gameIdToSave = createdGame[0].id;
+        if (createdGame) gameIdToSave = createdGame[0].id;
       } else {
-        gameIdToSave = fetchedGame[0].id;
+        if (fetchedGame) gameIdToSave = fetchedGame[0].id;
       }
       setGameId(gameIdToSave);
       const { data: savedSession } = await supabase
         .from("sessions")
-        .insert([{ game_id: gameIdToSave, date_played: dateOfGame }])
+        .insert([{ game_id: gameIdToSave, date_played: dateOfGame, user_id: user.id }])
         .select();
-      const seshId = savedSession[0].id;
-      setSessionId(seshId);
-      toast({
-        title: "Game session is created!",
-        description: "Now continue by adding players!",
-        status: "success",
-        duration: 5000,
-        position: "top",
-        isClosable: true,
-      });
+      if (savedSession) {
+        const seshId = savedSession[0].id;
+        setSessionId(seshId);
+        toast({
+          title: "Game session is created!",
+          description: "Now continue by adding players!",
+          status: "success",
+          duration: 5000,
+          position: "top",
+          isClosable: true,
+        });
+      }
     } catch (error) {
       console.error(error);
       toast({
@@ -166,7 +140,7 @@ const InputForm = ({ supabase }: InputFormProps) => {
 
   return (
     <Flex direction="column" width="390px">
-      <Heading size="lg" mb="10px">
+      <Heading size="lg" mb="10px" textAlign="center" mt="10px">
         Input New Game Scores
       </Heading>
       <Flex direction="column" p="5px" width="390px">
@@ -252,6 +226,9 @@ const InputForm = ({ supabase }: InputFormProps) => {
           </Button>
         )}
       </Flex>
+
+{/* THIS IS WHERE THE BREAK HAPPENS BETWEEN SESSION AND PLAYERS */}
+
       {sessionId && (
         <Flex justifyContent="center" mb="5px">
           <Button

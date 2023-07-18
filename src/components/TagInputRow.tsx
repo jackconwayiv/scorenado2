@@ -15,18 +15,12 @@ import {
 import { useEffect, useState } from "react";
 import { AiFillTag, AiOutlineTag } from "react-icons/ai";
 interface TagInputRowProps {
-  playerId: string | null;
   resultId: string | null;
   gameId: string | null;
   supabase: any;
 }
 
-const TagInputRow = ({
-  playerId,
-  resultId,
-  gameId,
-  supabase,
-}: TagInputRowProps) => {
+const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
   const [newTagName, setNewTagName] = useState<string | null>(null);
   const [appliedTags, setAppliedTags] = useState<any>([]);
   const [tagOptions, setTagOptions] = useState<any>([]);
@@ -121,7 +115,7 @@ const TagInputRow = ({
   };
 
   return (
-    <Flex direction="column" mt="5px">
+    <Flex direction="column">
       <Wrap>
         {appliedTags.length > 0 &&
           appliedTags.map((mappedTag: any, idx: number) => {
@@ -147,13 +141,14 @@ const TagInputRow = ({
           <InputLeftElement
             pointerEvents="none"
             color="gray.400"
-            fontSize=".7em"
+            fontSize=".5em"
           >
             Tags
           </InputLeftElement>
           <Input
             value={newTagName || ""}
             bgColor="white"
+            size="md"
             onChange={(e) => {
               if (e.target.value.length < 31) setNewTagName(e.target.value);
             }}
