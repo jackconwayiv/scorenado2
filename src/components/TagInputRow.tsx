@@ -1,3 +1,4 @@
+import { SmallAddIcon } from "@chakra-ui/icons";
 import {
   Button,
   Flex,
@@ -13,7 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { AiFillTag, AiOutlineTag } from "react-icons/ai";
+import { AiFillTag } from "react-icons/ai";
 interface TagInputRowProps {
   resultId: string | null;
   gameId: string | null;
@@ -201,7 +202,7 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
                     onClick={() => saveTag(availableTag.name)}
                   >
                     {" "}
-                    <TagLeftIcon boxSize="12px" as={AiOutlineTag} />
+                    <TagLeftIcon boxSize="12px" as={SmallAddIcon} />
                     <TagLabel>{availableTag.name}</TagLabel>
                   </Tag>
                 );
