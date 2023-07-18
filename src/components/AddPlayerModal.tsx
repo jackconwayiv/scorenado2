@@ -91,6 +91,7 @@ const AddPlayerModal = ({
       setPlayerCount(newPlayerCount);
       setName("");
       setPoints(null);
+      setDisplayPoints("");
       setIsWinner(false);
       onClose();
     } catch (error) {
