@@ -31,7 +31,7 @@ const Scores = ({ supabase }: ScoresProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      <Heading size="lg">Scores and Calendar</Heading>
+      <Heading size="lg">Leaderboard (Scores and Calendar)</Heading>
       {sessions &&
         sessions.length > 0 &&
         sessions.map((session: any, idx: number) => (

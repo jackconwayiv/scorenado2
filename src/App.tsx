@@ -87,6 +87,10 @@ function App() {
               path="leaderboard"
               element={<Scores supabase={supabase} />}
             />
+            <Route
+              path="*"
+              element={<LandingPage supabase={supabase} user={user} />}
+            />
           </Routes>
         </BrowserRouter>
       </Flex>

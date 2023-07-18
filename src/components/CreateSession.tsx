@@ -1,11 +1,11 @@
 import {
   Button,
   Flex,
-  Heading,
   Input,
   InputGroup,
   InputLeftElement,
   Tag,
+  Text,
   Wrap,
   WrapItem,
   useToast,
@@ -21,22 +21,17 @@ interface CreateSessionProps {
 
 const CreateSession = ({ supabase, user }: CreateSessionProps) => {
   const [game, setGame] = useState<string>("");
-  const [gameId, setGameId] = useState<string | null>(null);
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
   const [myGames, setMyGames] = useState<any>([]);
   const toast = useToast();
   const navigate = useNavigate();
   const dateOfToday = new Date().toISOString().substring(0, 10);
 
-  // we need game_id, date_played, user_id
-  //we'll get a new session id back and navigate to that route to the editor.
-
   useEffect(() => {
     console.log("firing input form useeffect");
     const todaysDate = new Date().toISOString().substring(0, 10);
     setDateOfGame(todaysDate);
     const fetchRecentGames = async () => {
-      //currently this is just all games, will change to your 5 most played games, and will also need to fetch # of times that game appears (array.length?)
       try {
         let { data: games } = await supabase.from("games").select("id,name");
         if (games && games.length > 0) setMyGames(games);
@@ -78,7 +73,6 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
       } else {
         if (fetchedGame) gameIdToSave = fetchedGame[0].id;
       }
-      setGameId(gameIdToSave);
       const { data: savedSession } = await supabase
         .from("sessions")
         .insert([
@@ -89,7 +83,7 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
         const seshId = savedSession[0].id;
         navigate(`session/${seshId}`);
         toast({
-          title: "Game session is created!",
+          title: `Game session of ${game} is created!`,
           description: "Now continue by adding players!",
           status: "success",
           duration: 5000,
@@ -112,11 +106,9 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
 
   return (
     <Flex direction="column" width="390px">
-      <Heading size="md" mb="5px" textAlign="center" mt="10px">
-        Create New Game Session
-      </Heading>
       <Flex direction="column" p="5px" width="390px">
-        <Flex mt="5px">
+        <Flex mt="5px" direction="column" alignItems="baseline">
+          <Text>Name of Game:</Text>
           <InputGroup>
             <InputLeftElement
               pointerEvents="none"
@@ -157,7 +149,8 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
               })}
           </Wrap>
         </Flex>
-        <Flex mt="5px">
+        <Flex mt="15px" direction="column" alignItems="baseline">
+          <Text>Date of Game:</Text>
           <InputGroup>
             <InputLeftElement
               pointerEvents="none"
@@ -179,14 +172,13 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
 
         <Button
           alignSelf="center"
-          mt="5px"
-          width="200px"
-          size="sm"
+          mt="15px"
+          width="90px"
           isDisabled={!game}
           colorScheme="purple"
           onClick={saveSession}
         >
-          Save Session & Add Scores
+          {`Next >>`}
         </Button>
       </Flex>
     </Flex>

@@ -55,7 +55,7 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      <Heading size="lg">Edit Session</Heading>
+      <Heading size="lg">Enter Scores</Heading>
       <Divider m="10px" />
       {session && session.games && (
         <>

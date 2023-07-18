@@ -1,4 +1,4 @@
-import { Avatar, Flex, Heading, Tab, TabList, Tabs } from "@chakra-ui/react";
+import { Avatar, Divider, Flex, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import HamburgerMenu from "./HamburgerMenu";
 
@@ -26,20 +26,14 @@ const Navbar = ({ user }: NavbarProps) => {
         <Avatar
           m="12px"
           size="sm"
+          cursor="pointer"
+          onClick={() => navigate(`profile`)}
           name={user.identities[0].identity_data.full_name}
           src={user.identities[0].identity_data.avatar_url}
           referrerPolicy="no-referrer"
         />
       </Flex>
-      <Flex direction="row" justifyContent="space-around" width="400px">
-        <Tabs variant="soft-rounded" colorScheme="purple">
-          <TabList>
-            <Tab onClick={() => navigate(`/`)}>Welcome</Tab>
-            <Tab onClick={() => navigate(`/profile`)}>Profile</Tab>
-            <Tab onClick={() => navigate(`/leaderboard`)}>Leaderboards</Tab>
-          </TabList>
-        </Tabs>
-      </Flex>
+      <Divider mt="10px" />
     </Flex>
   );
 };

@@ -1,12 +1,15 @@
 import { Avatar, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { ImExit } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
 interface MyProfileProps {
   supabase: supabaseType;
   user: any;
 }
 const MyProfile = ({ supabase, user }: MyProfileProps) => {
+  const navigate = useNavigate();
   const handleLogOut = async () => {
+    navigate("/");
     const { error } = await supabase.auth.signOut();
     if (error) console.error(error);
   };

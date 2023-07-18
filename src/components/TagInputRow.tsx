@@ -36,6 +36,7 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
         let { data: fetchedTags } = await supabase
           .from("tags")
           .select("*")
+          .eq("is_session_tag", false)
           .eq("game_id", gameId);
         setTagOptions(fetchedTags);
       } catch (error) {
@@ -108,6 +109,8 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
           .insert([{ name: tagNameToQuery, game_id: gameId }])
           .select();
         tagToSave = createdTag[0];
+        const newTagOptions = [...tagOptions, tagToSave];
+        setTagOptions(newTagOptions);
       } else {
         tagToSave = fetchedTag[0];
       }
