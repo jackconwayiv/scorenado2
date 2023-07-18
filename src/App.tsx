@@ -53,7 +53,13 @@ function App() {
   }, []);
 
   if (!session) {
-    return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />;
+    return (
+      <Auth
+        supabaseClient={supabase}
+        redirectTo={window.location.origin}
+        appearance={{ theme: ThemeSupa }}
+      />
+    );
   } else {
     return (
       <Flex
