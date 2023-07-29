@@ -50,11 +50,16 @@ const AddPlayerModal = ({
   //this should be fetched at EditSession level and passed into modal child
   //at parent level, it should be filtered so names that are already in records aren't available
   const myRecentPlayers = [
-    { id: 1, name: "Alan" },
-    { id: 2, name: "Betty" },
-    { id: 3, name: "Chuck" },
-    { id: 4, name: "Diana" },
-    { id: 5, name: "Eddie" },
+    { id: 1, name: "Ren" },
+    { id: 2, name: "Caleb" },
+    { id: 3, name: "Nana" },
+    { id: 4, name: "Jack" },
+    { id: 5, name: "Sam" },
+    { id: 6, name: "Lolo" },
+    { id: 7, name: "Dantrum" },
+    { id: 8, name: "RayRae" },
+    { id: 9, name: "Drew" },
+    { id: 10, name: "Leah" },
   ];
 
   const [recentPlayers, setRecentPlayers] = useState<any>(myRecentPlayers);
