@@ -108,7 +108,7 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
     <Flex direction="column" width="390px">
       <Flex direction="column" p="5px" width="390px">
         <Flex mt="5px" direction="column" alignItems="baseline">
-          <Text>Date of Game:</Text>
+          <Text>Date Played:</Text>
           <InputGroup>
             <InputLeftElement
               pointerEvents="none"
@@ -128,13 +128,13 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
           </InputGroup>
         </Flex>
         <Flex mt="5px" direction="column" alignItems="baseline">
-          <Text>Name of Game:</Text>
+          <Text>Game Title:</Text>
           <InputGroup>
             <InputLeftElement
               pointerEvents="none"
               color="gray.400"
               fontSize=".7em"
-              children="Game"
+              children="Title"
             />
             <Input
               value={game}
@@ -173,12 +173,11 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
         <Button
           alignSelf="center"
           mt="15px"
-          width="90px"
           isDisabled={!game}
-          colorScheme="purple"
+          colorScheme="green"
           onClick={saveSession}
         >
-          {`Next >>`}
+          {`Create Game Session`}
         </Button>
       </Flex>
     </Flex>

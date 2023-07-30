@@ -38,7 +38,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
               width="375px"
               padding="5px"
               margin="5px"
-              bgColor={session.is_finalized ? `green.100` : `purple.100`}
+              bgColor={session.is_finalized ? `gray.100` : `gray.200`}
               cursor="pointer"
               onClick={() => navigate(`/session/${session.id}`)}
             >

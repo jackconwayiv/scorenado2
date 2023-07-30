@@ -9,9 +9,9 @@ import {
 } from "@chakra-ui/react";
 import supabaseType from "../resources/types";
 import CreateSession from "./CreateSession";
+import MyPlayers from "./MyPlayers";
 import MySessions from "./MySessions";
 import QuickStats from "./QuickStats";
-import MyPlayers from "./MyPlayers";
 
 interface LandingPageProps {
   supabase: supabaseType;
@@ -27,7 +27,7 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
       <QuickStats supabase={supabase} user={user} />
       <Tabs
         variant="soft-rounded"
-        colorScheme="purple"
+        colorScheme="gray"
         align="center"
         mt="10px"
         width="400px"

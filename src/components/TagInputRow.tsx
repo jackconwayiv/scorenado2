@@ -52,7 +52,6 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
           .from("result_tags")
           .select("*, tags (*)")
           .eq("result_id", resultId);
-        console.dir(result_tags);
         const fetchedAppliedTags = result_tags.map(
           (result_tag: any) => result_tag.tags
         );
