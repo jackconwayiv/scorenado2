@@ -221,7 +221,7 @@ const AddPlayerModal = ({
                     <Tag
                       cursor="pointer"
                       size="sm"
-                      bgColor="gray.100"
+                      bgColor={player.color}
                       m="5px"
                       onClick={() => {
                         const newPlayers = myPlayers.toSpliced(idx, 1);
