@@ -1,4 +1,4 @@
-import { Button, Divider, Flex, Text } from "@chakra-ui/react";
+import { Divider, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { GiLaurelsTrophy } from "react-icons/gi";
 import { LuDices } from "react-icons/lu";
@@ -54,7 +54,7 @@ const QuickStats = ({ supabase, user }: QuickStatsProps) => {
           <LuDices /> <Text ml="5px">Games Played: {gamesPlayed}</Text>
         </Flex>
       </Flex>
-      <Button
+      {/* <Button
         colorScheme="yellow"
         size="xs"
         onClick={() => {
@@ -62,7 +62,7 @@ const QuickStats = ({ supabase, user }: QuickStatsProps) => {
         }}
       >
         Check the Leaderboards!
-      </Button>
+      </Button> */}
       <Divider m="10px" />
     </>
   );

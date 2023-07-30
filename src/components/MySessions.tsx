@@ -1,4 +1,4 @@
-import { Box, Card, Divider, Flex, Wrap } from "@chakra-ui/react";
+import { Box, Card, Divider, Flex, Text, Wrap } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
@@ -17,7 +17,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
       try {
         let { data: sessions } = await supabase
           .from("sessions")
-          .select("*, games (name), results (name)")
+          .select("*, games (name), results (name, players (name))")
           .eq("user_id", user.id);
         if (sessions) setMySessions(sessions);
       } catch (error) {
@@ -35,7 +35,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
           mySessions.map((session) => (
             <Card
               key={session.id}
-              width="100%"
+              width="375px"
               padding="5px"
               margin="5px"
               bgColor={session.is_finalized ? `green.100` : `purple.100`}
@@ -58,7 +58,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
                 {session.results && session.results.length ? (
                   session.results.map((result: any, idx: number) => (
                     <Box key={idx} fontSize="12px">
-                      {result.name}
+                      {result.players.name}
                     </Box>
                   ))
                 ) : (
@@ -67,6 +67,11 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
               </Flex>
             </Card>
           ))}
+        {!mySessions || mySessions.length === 0 ? (
+          <Text>No games yet!</Text>
+        ) : (
+          ``
+        )}
       </Wrap>
     </Flex>
   );

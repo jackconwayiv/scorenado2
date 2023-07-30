@@ -20,7 +20,7 @@ const PlayerDisplayBox = ({
     try {
       await supabase.from("results").delete().eq("id", result.id);
       toast({
-        title: `${result.name} was successfully deleted!`,
+        title: `That player was successfully deleted!`,
         status: "success",
         duration: 5000,
         position: "top",
@@ -48,7 +48,7 @@ const PlayerDisplayBox = ({
         <Flex direction="column">
           {/* <Text>Avatar or 6-digit confirm code</Text> */}
           <Flex direction="row" justifyContent="space-between">
-            <Heading size="md">{result.name}</Heading>
+            <Heading size="md">{result.players.name}</Heading>
             <Box>{result.is_winner ? "WINNER" : " "}</Box>
             <Box>{result.points} points</Box>
           </Flex>

@@ -10,6 +10,7 @@ import EditSession from "./components/EditSession";
 import LandingPage from "./components/LandingPage";
 import MyProfile from "./components/MyProfile";
 import Navbar from "./components/Navbar";
+import PlayerView from "./components/PlayerView";
 import Scores from "./components/Scores";
 
 const supabase = createClient(
@@ -82,6 +83,10 @@ function App() {
             <Route
               path="profile"
               element={<MyProfile supabase={supabase} user={user} />}
+            />
+            <Route
+              path="players/:playerId"
+              element={<PlayerView supabase={supabase} user={user} />}
             />
             <Route
               path="leaderboard"

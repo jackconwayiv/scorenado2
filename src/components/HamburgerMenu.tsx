@@ -21,10 +21,11 @@ const HamburgerMenu = () => {
       />
       <MenuList>
         <MenuItem onClick={() => navigate(`/`)}>Welcome</MenuItem>
-        <MenuItem onClick={() => navigate(`profile`)}>Profile</MenuItem>
-        <MenuItem onClick={() => navigate(`leaderboard`)}>
+        <MenuItem onClick={() => navigate(`profile`)}>Settings</MenuItem>
+        {/* <MenuItem onClick={() => navigate(`players`)}>My Players</MenuItem> */}
+        {/* <MenuItem onClick={() => navigate(`leaderboard`)}>
           Leaderboards
-        </MenuItem>
+        </MenuItem> */}
         {/* <MenuItem icon={<AddIcon />} command="⌘T">
           New Tab
         </MenuItem> */}

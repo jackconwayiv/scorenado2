@@ -16,10 +16,13 @@ interface EditSessionProps {
   user: any;
 }
 
+//does playerCount or numberOfPlayers matter here?
+
 const EditSession = ({ supabase, user }: EditSessionProps) => {
   let { sessionId } = useParams();
   const [session, setSession] = useState<any>({});
   const [playerCount, setPlayerCount] = useState<number>(0);
+  const [myPlayers, setMyPlayers] = useState<any>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -27,12 +30,30 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
   //player boxes should have a QR code that says "log in to confirm your score"
   //tag toggling happens inside the saved player box, at this level
 
+  //ultimately you'll grab all results for games you own, then grab the five most common player ids, then grab those by name
+  //for now, just grab all player rows you own
+  useEffect(() => {
+    console.log("fetching my players");
+    const fetchMyPlayers = async () => {
+      try {
+        let { data: myFetchedPlayers } = await supabase
+          .from("players")
+          .select("*")
+          .eq("user_id", user.id);
+        setMyPlayers(myFetchedPlayers);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchMyPlayers();
+  }, [supabase, user]);
+
   useEffect(() => {
     const fetchSessionDetails = async () => {
       try {
         let { data: sessions } = await supabase
           .from("sessions")
-          .select("*, results(*), games(id, name)")
+          .select("*, results(*, players(name)), games(id, name)")
           .eq("id", sessionId);
         if (sessions) {
           const fetchedSession = sessions[0];
@@ -91,6 +112,9 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
             sessionId={sessionId}
             playerCount={playerCount}
             setPlayerCount={setPlayerCount}
+            myPlayers={myPlayers}
+            setMyPlayers={setMyPlayers}
+
             user={user}
           />
         </>

@@ -11,6 +11,7 @@ import supabaseType from "../resources/types";
 import CreateSession from "./CreateSession";
 import MySessions from "./MySessions";
 import QuickStats from "./QuickStats";
+import MyPlayers from "./MyPlayers";
 
 interface LandingPageProps {
   supabase: supabaseType;
@@ -35,6 +36,7 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
         <TabList>
           <Tab>Add Game</Tab>
           <Tab>My Games</Tab>
+          <Tab>My Players</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -42,6 +44,9 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
           </TabPanel>
           <TabPanel>
             <MySessions supabase={supabase} user={user} />
+          </TabPanel>
+          <TabPanel>
+            <MyPlayers supabase={supabase} user={user} />
           </TabPanel>
         </TabPanels>
       </Tabs>

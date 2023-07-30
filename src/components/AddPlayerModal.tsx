@@ -29,6 +29,8 @@ interface AddPlayerModalProps {
   user: any;
   playerCount: number;
   setPlayerCount: (arg0: number) => void;
+  myPlayers: any;
+  setMyPlayers: any;
 }
 
 const AddPlayerModal = ({
@@ -39,30 +41,15 @@ const AddPlayerModal = ({
   user,
   playerCount,
   setPlayerCount,
+  myPlayers,
+  setMyPlayers,
 }: AddPlayerModalProps) => {
   const [name, setName] = useState<string>("");
+  const [player, setPlayer] = useState<any>({});
   const [points, setPoints] = useState<number | null>(null);
   const [displayPoints, setDisplayPoints] = useState<string>("");
   const [isWinner, setIsWinner] = useState<boolean>(false);
   const toast = useToast();
-
-  // this is an array of player objects fetched from api
-  //this should be fetched at EditSession level and passed into modal child
-  //at parent level, it should be filtered so names that are already in records aren't available
-  const myRecentPlayers = [
-    { id: 1, name: "Ren" },
-    { id: 2, name: "Caleb" },
-    { id: 3, name: "Nana" },
-    { id: 4, name: "Jack" },
-    { id: 5, name: "Sam" },
-    { id: 6, name: "Lolo" },
-    { id: 7, name: "Dantrum" },
-    { id: 8, name: "RayRae" },
-    { id: 9, name: "Drew" },
-    { id: 10, name: "Leah" },
-  ];
-
-  const [recentPlayers, setRecentPlayers] = useState<any>(myRecentPlayers);
 
   const handleNameInput = (playerName: string) => {
     if (playerName.length < 19) {
@@ -72,32 +59,71 @@ const AddPlayerModal = ({
 
   const handleSavePlayer = async () => {
     try {
-      const { data: newResult } = await supabase
-        .from("results")
-        .insert([
-          {
-            session_id: sessionId,
-            name: name,
-            points: points,
-            is_winner: isWinner,
-            user_id: user.id,
-          },
-        ])
-        .select();
-      toast({
-        title: `${name}'s results are saved!`,
-        description: "Add tags, or move to the next player!",
-        status: "success",
-        duration: 5000,
-        position: "top",
-        isClosable: true,
-      });
-      const newPlayerCount = playerCount + 1;
-      setPlayerCount(newPlayerCount);
-      setName("");
-      setPoints(null);
-      setDisplayPoints("");
-      setIsWinner(false);
+      //if that length is 0, write a new player and grab it into state
+      //also use that player to write the results row
+      let confirmedPlayer = { name: "", id: "" };
+      const myPlayerNames = myPlayers.map((player: any) => player.name);
+      if (player.id) {
+        //this is case where user clicked a suggested player
+        confirmedPlayer = { ...player };
+      } else if (myPlayerNames.indexOf(name) !== -1) {
+        //this is a corner case where user chose to type out the name
+        //even though it was already auto-suggested for them
+        confirmedPlayer = myPlayers[myPlayerNames.indexOf(name)];
+      } else {
+        //we are trying to see if the user is already in db and hasn't
+        //been suggested for some reason (will be useful later when
+        //we grab top 5 most faced players, and not all of them)
+        let { data: foundPlayers } = await supabase
+          .from("players")
+          .select("*")
+          .eq("name", name)
+          .eq("user_id", user.id);
+        if (foundPlayers && foundPlayers.length > 0) {
+          confirmedPlayer = foundPlayers[0];
+        } else {
+          //last case is we have to write a new player and grab it into state
+          const { data: newPlayer } = await supabase
+            .from("players")
+            .insert([{ name: name, user_id: user.id }])
+            .select();
+          //may need to debug here to make sure we know what newPlayer is
+          if (newPlayer && newPlayer.length > 0) {
+            confirmedPlayer = newPlayer[0];
+          }
+        }
+      }
+      if (confirmedPlayer && confirmedPlayer.id) {
+        const { data: newResult } = await supabase
+          .from("results")
+          .insert([
+            {
+              session_id: sessionId,
+              player_id: confirmedPlayer.id,
+              points: points,
+              is_winner: isWinner,
+              user_id: user.id,
+            },
+          ])
+          .select();
+        toast({
+          title: `${name}'s results are saved!`,
+          description: "Add tags, or move to the next player!",
+          status: "success",
+          duration: 5000,
+          position: "top",
+          isClosable: true,
+        });
+        const newPlayerCount = playerCount + 1;
+        setPlayerCount(newPlayerCount);
+        setName("");
+        setPlayer({});
+        setPoints(null);
+        setDisplayPoints("");
+        setIsWinner(false);
+      } else {
+        console.error("We had trouble setting that user.");
+      }
       onClose();
     } catch (error) {
       console.error(error);
@@ -189,7 +215,7 @@ const AddPlayerModal = ({
           </Flex>
           <Wrap>
             {name === "" &&
-              recentPlayers.map((player: any, idx: number) => {
+              myPlayers.map((player: any, idx: number) => {
                 return (
                   <WrapItem key={player.id}>
                     <Tag
@@ -198,12 +224,10 @@ const AddPlayerModal = ({
                       bgColor="gray.100"
                       m="5px"
                       onClick={() => {
-                        const newRecentPlayers = recentPlayers.toSpliced(
-                          idx,
-                          1
-                        );
-                        setRecentPlayers(newRecentPlayers);
+                        const newPlayers = myPlayers.toSpliced(idx, 1);
+                        setMyPlayers(newPlayers);
                         setName(player.name);
+                        setPlayer(player);
                       }}
                     >
                       {player.name}

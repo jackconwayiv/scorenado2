@@ -108,6 +108,26 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
     <Flex direction="column" width="390px">
       <Flex direction="column" p="5px" width="390px">
         <Flex mt="5px" direction="column" alignItems="baseline">
+          <Text>Date of Game:</Text>
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              color="gray.400"
+              fontSize=".7em"
+              children="Date"
+            />
+            <Input
+              width="380px"
+              mr="10px"
+              bgColor="white"
+              type="date"
+              textAlign="center"
+              value={dateOfGame ? dateOfGame : dateOfToday}
+              onChange={(e) => handleDateChange(e.target.value)}
+            />
+          </InputGroup>
+        </Flex>
+        <Flex mt="5px" direction="column" alignItems="baseline">
           <Text>Name of Game:</Text>
           <InputGroup>
             <InputLeftElement
@@ -148,26 +168,6 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
                 );
               })}
           </Wrap>
-        </Flex>
-        <Flex mt="15px" direction="column" alignItems="baseline">
-          <Text>Date of Game:</Text>
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              color="gray.400"
-              fontSize=".7em"
-              children="Date"
-            />
-            <Input
-              width="380px"
-              mr="10px"
-              bgColor="white"
-              type="date"
-              textAlign="center"
-              value={dateOfGame ? dateOfGame : dateOfToday}
-              onChange={(e) => handleDateChange(e.target.value)}
-            />
-          </InputGroup>
         </Flex>
 
         <Button
