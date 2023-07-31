@@ -10,18 +10,28 @@ import {
   TagCloseButton,
   TagLabel,
   TagLeftIcon,
+  Text,
   Wrap,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { AiFillTag } from "react-icons/ai";
+import supabaseType from "../resources/types";
 interface TagInputRowProps {
   resultId: string | null;
   gameId: string | null;
-  supabase: any;
+  supabase: supabaseType;
+  user: any;
+  finalized: boolean;
 }
 
-const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
+const TagInputRow = ({
+  resultId,
+  gameId,
+  supabase,
+  user,
+  finalized,
+}: TagInputRowProps) => {
   const [newTagName, setNewTagName] = useState<string | null>(null);
   const [appliedTags, setAppliedTags] = useState<any>([]);
   const [tagOptions, setTagOptions] = useState<any>([]);
@@ -37,7 +47,8 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
           .from("tags")
           .select("*")
           .eq("is_session_tag", false)
-          .eq("game_id", gameId);
+          .eq("game_id", gameId)
+          .eq("user_id", user.id);
         setTagOptions(fetchedTags);
       } catch (error) {
         console.error(error);
@@ -52,7 +63,7 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
           .from("result_tags")
           .select("*, tags (*)")
           .eq("result_id", resultId);
-        const fetchedAppliedTags = result_tags.map(
+        const fetchedAppliedTags = result_tags?.map(
           (result_tag: any) => result_tag.tags
         );
         setAppliedTags(fetchedAppliedTags);
@@ -63,15 +74,16 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
     if (resultId !== null) {
       fetchTagsForPlayer();
     }
-  }, [gameId, resultId, supabase]);
+  }, [gameId, resultId, supabase, user]);
 
   const removeTagFromResult = async (tagIdToRemove: number) => {
     try {
       await supabase
         .from("result_tags")
         .delete()
-        .select()
-        .match({ result_id: resultId, tag_id: tagIdToRemove });
+        // .select()
+        .eq("result_id", resultId)
+        .eq("tag_id", tagIdToRemove);
       const newAppliedTags = appliedTags.filter(
         (tag: any) => tag.id !== tagIdToRemove
       );
@@ -102,16 +114,16 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
         .select("*")
         .eq("name", tagNameToQuery)
         .limit(1);
-      if (fetchedTag.length === 0) {
+      if (fetchedTag && fetchedTag.length === 0) {
         const { data: createdTag } = await supabase
           .from("tags")
           .insert([{ name: tagNameToQuery, game_id: gameId }])
           .select();
-        tagToSave = createdTag[0];
+        if (createdTag && createdTag.length > 0) tagToSave = createdTag[0];
         const newTagOptions = [...tagOptions, tagToSave];
         setTagOptions(newTagOptions);
       } else {
-        tagToSave = fetchedTag[0];
+        if (fetchedTag && fetchedTag.length > 0) tagToSave = fetchedTag[0];
       }
       await supabase
         .from("result_tags")
@@ -157,60 +169,65 @@ const TagInputRow = ({ resultId, gameId, supabase }: TagInputRowProps) => {
             );
           })}
       </Wrap>
-      <Flex justifyContent="center" mt="5px">
-        <InputGroup mr="10px">
-          <InputLeftElement
-            pointerEvents="none"
-            color="gray.400"
-            fontSize=".5em"
-          >
-            Tags
-          </InputLeftElement>
-          <Input
-            value={newTagName || ""}
-            bgColor="white"
-            size="md"
-            onChange={(e) => {
-              if (e.target.value.length < 31) setNewTagName(e.target.value);
-            }}
-          />
-          <InputRightElement>
-            <Button
-              isDisabled={!newTagName}
-              size="xs"
-              onClick={() => newTagName && saveTag(newTagName)}
+      {!finalized && (
+        <Flex direction="column" justifyContent="center" mt="5px">
+          <Text fontSize="12px">Add optional tags:</Text>
+          <InputGroup mr="10px">
+            <InputLeftElement
+              pointerEvents="none"
+              color="gray.400"
+              fontSize=".5em"
             >
-              +
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </Flex>
-      <Flex mt="5px" justifyContent="center">
-        <Wrap>
-          {tagOptions.length > 0 &&
-            tagOptions
-              .filter(
-                (tagObject: any) =>
-                  arrayOfAppliedTagIDs.indexOf(tagObject.id) === -1
-              )
-              .map((availableTag: any, idx: number) => {
-                return (
-                  <Tag
-                    size="sm"
-                    key={idx}
-                    variant="subtle"
-                    colorScheme="gray"
-                    cursor="pointer"
-                    onClick={() => saveTag(availableTag.name)}
-                  >
-                    {" "}
-                    <TagLeftIcon boxSize="12px" as={SmallAddIcon} />
-                    <TagLabel>{availableTag.name}</TagLabel>
-                  </Tag>
-                );
-              })}
-        </Wrap>
-      </Flex>
+              Tag
+            </InputLeftElement>
+            <Input
+              value={newTagName || ""}
+              bgColor="white"
+              size="md"
+              onChange={(e) => {
+                if (e.target.value.length < 31) setNewTagName(e.target.value);
+              }}
+            />
+            <InputRightElement>
+              <Button
+                isDisabled={!newTagName}
+                size="xs"
+                onClick={() => newTagName && saveTag(newTagName)}
+              >
+                +
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </Flex>
+      )}
+      {!finalized && (
+        <Flex mt="5px" justifyContent="center">
+          <Wrap>
+            {tagOptions.length > 0 &&
+              tagOptions
+                .filter(
+                  (tagObject: any) =>
+                    arrayOfAppliedTagIDs.indexOf(tagObject.id) === -1
+                )
+                .map((availableTag: any, idx: number) => {
+                  return (
+                    <Tag
+                      size="sm"
+                      key={idx}
+                      variant="subtle"
+                      colorScheme="gray"
+                      cursor="pointer"
+                      onClick={() => saveTag(availableTag.name)}
+                    >
+                      {" "}
+                      <TagLeftIcon boxSize="12px" as={SmallAddIcon} />
+                      <TagLabel>{availableTag.name}</TagLabel>
+                    </Tag>
+                  );
+                })}
+          </Wrap>
+        </Flex>
+      )}
     </Flex>
   );
 };

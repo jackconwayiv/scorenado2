@@ -2,7 +2,6 @@ import { Divider, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { GiLaurelsTrophy } from "react-icons/gi";
 import { LuDices } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
 
 interface QuickStatsProps {
@@ -11,7 +10,6 @@ interface QuickStatsProps {
 }
 
 const QuickStats = ({ supabase, user }: QuickStatsProps) => {
-  const navigate = useNavigate();
   const [totalVictories, setTotalVictories] = useState<number>(0);
   const [gamesPlayed, setGamesPlayed] = useState<number>(0);
 
@@ -21,6 +19,7 @@ const QuickStats = ({ supabase, user }: QuickStatsProps) => {
         let { data: results } = await supabase
           .from("results")
           .select("*, sessions (is_finalized)")
+          .eq("sessions(is_finalized)", true)
           .eq("profile_id", user.id);
         const fetchedFinalizedGames = results?.filter(
           (result) => result.sessions.is_finalized

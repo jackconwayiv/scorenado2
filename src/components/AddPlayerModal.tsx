@@ -94,7 +94,7 @@ const AddPlayerModal = ({
         }
       }
       if (confirmedPlayer && confirmedPlayer.id) {
-        const { data: newResult } = await supabase
+        await supabase
           .from("results")
           .insert([
             {

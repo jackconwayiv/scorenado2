@@ -4,6 +4,12 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Tag,
   Text,
   Wrap,
@@ -17,9 +23,16 @@ import supabaseType from "../resources/types";
 interface CreateSessionProps {
   supabase: supabaseType;
   user: any;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const CreateSession = ({ supabase, user }: CreateSessionProps) => {
+const CreateSession = ({
+  supabase,
+  user,
+  isOpen,
+  onClose,
+}: CreateSessionProps) => {
   const [game, setGame] = useState<string>("");
   const [dateOfGame, setDateOfGame] = useState<string | undefined>(undefined);
   const [myGames, setMyGames] = useState<any>([]);
@@ -90,6 +103,8 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
           position: "top",
           isClosable: true,
         });
+        //add yourself as a result to the session?
+        onClose();
       }
     } catch (error) {
       console.error(error);
@@ -105,82 +120,91 @@ const CreateSession = ({ supabase, user }: CreateSessionProps) => {
   };
 
   return (
-    <Flex direction="column" width="390px">
-      <Flex direction="column" p="5px" width="390px">
-        <Flex mt="5px" direction="column" alignItems="baseline">
-          <Text>Date Played:</Text>
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              color="gray.400"
-              fontSize=".7em"
-              children="Date"
-            />
-            <Input
-              width="380px"
-              mr="10px"
-              bgColor="white"
-              type="date"
-              textAlign="center"
-              value={dateOfGame ? dateOfGame : dateOfToday}
-              onChange={(e) => handleDateChange(e.target.value)}
-            />
-          </InputGroup>
-        </Flex>
-        <Flex mt="5px" direction="column" alignItems="baseline">
-          <Text>Game Title:</Text>
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              color="gray.400"
-              fontSize=".7em"
-              children="Title"
-            />
-            <Input
-              value={game}
-              onChange={(e) => {
-                handleGameInput(e.target.value);
-              }}
-              width="380px"
-              textAlign="center"
-              mr="10px"
-              bgColor="white"
-            />
-          </InputGroup>
-        </Flex>
-        <Flex mt="5px" justifyContent="center">
-          <Wrap>
-            {game === "" &&
-              myGames.map((game: any) => {
-                return (
-                  <WrapItem key={game.id}>
-                    <Tag
-                      cursor="pointer"
-                      size="sm"
-                      bgColor="gray.100"
-                      onClick={() => {
-                        setGame(game.name);
-                      }}
-                    >
-                      {game.name} ({game.qty})
-                    </Tag>
-                  </WrapItem>
-                );
-              })}
-          </Wrap>
-        </Flex>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>New Game Session</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Flex direction="column" width="390px">
+            <Flex direction="column" p="5px" width="390px">
+              <Flex mt="5px" direction="column" alignItems="baseline">
+                <Text>Date Played:</Text>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    color="gray.400"
+                    fontSize=".7em"
+                    children="Date"
+                  />
+                  <Input
+                    width="380px"
+                    mr="10px"
+                    bgColor="white"
+                    type="date"
+                    textAlign="center"
+                    value={dateOfGame ? dateOfGame : dateOfToday}
+                    onChange={(e) => handleDateChange(e.target.value)}
+                  />
+                </InputGroup>
+              </Flex>
+              <Flex mt="5px" direction="column" alignItems="baseline">
+                <Text>Game Title:</Text>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    color="gray.400"
+                    fontSize=".7em"
+                    children="Title"
+                  />
+                  <Input
+                    value={game}
+                    onChange={(e) => {
+                      handleGameInput(e.target.value);
+                    }}
+                    width="380px"
+                    textAlign="center"
+                    mr="10px"
+                    bgColor="white"
+                  />
+                </InputGroup>
+              </Flex>
+              <Flex mt="5px" justifyContent="center">
+                <Wrap>
+                  {game === "" &&
+                    myGames.map((game: any) => {
+                      return (
+                        <WrapItem key={game.id}>
+                          <Tag
+                            cursor="pointer"
+                            size="sm"
+                            bgColor="gray.100"
+                            onClick={() => {
+                              setGame(game.name);
+                            }}
+                          >
+                            {game.name} ({game.qty})
+                          </Tag>
+                        </WrapItem>
+                      );
+                    })}
+                </Wrap>
+              </Flex>
 
-        <Button
-          alignSelf="center"
-          mt="15px"
-          isDisabled={!game}
-          colorScheme="green"
-          onClick={saveSession}
-        >
-          {`Create Game Session`}
-        </Button>
-      </Flex>
-    </Flex>
+              <Button
+                alignSelf="center"
+                mt="15px"
+                isDisabled={!game}
+                colorScheme="green"
+                onClick={saveSession}
+              >
+                {`Create Game Session`}
+              </Button>
+            </Flex>
+          </Flex>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
 export default CreateSession;

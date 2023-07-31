@@ -50,7 +50,7 @@ const PlayerView = ({ supabase, user }: PlayerViewProps) => {
   const updateColor = async (selectedColor: string) => {
     try {
       const newColor = `${selectedColor}.200`;
-      const { data } = await supabase
+      await supabase
         .from("players")
         .update({ color: newColor })
         .eq("id", results[0].players.id)

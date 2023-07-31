@@ -20,7 +20,7 @@ const HamburgerMenu = () => {
         size="sm"
       />
       <MenuList>
-        <MenuItem onClick={() => navigate(`/`)}>Welcome</MenuItem>
+        <MenuItem onClick={() => navigate(`/`)}>Home</MenuItem>
         <MenuItem onClick={() => navigate(`profile`)}>Settings</MenuItem>
         {/* <MenuItem onClick={() => navigate(`players`)}>My Players</MenuItem> */}
         {/* <MenuItem onClick={() => navigate(`leaderboard`)}>

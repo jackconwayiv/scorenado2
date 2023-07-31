@@ -1,7 +1,19 @@
-import { Box, Card, Divider, Flex, Text, Wrap } from "@chakra-ui/react";
+import { CheckCircleIcon, WarningTwoIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Button,
+  Card,
+  Divider,
+  Flex,
+  Tag,
+  Text,
+  Wrap,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
+import CreateSession from "./CreateSession";
 
 interface MySessionsProps {
   supabase: supabaseType;
@@ -10,6 +22,7 @@ interface MySessionsProps {
 
 const MySessions = ({ supabase, user }: MySessionsProps) => {
   const [mySessions, setMySessions] = useState<any[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   useEffect(() => {
     console.log("firing use effect to grab sessions");
@@ -17,7 +30,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
       try {
         let { data: sessions } = await supabase
           .from("sessions")
-          .select("*, games (name), results (name, players (name))")
+          .select("*, games (name), results (name, players (name, color))")
           .eq("user_id", user.id);
         if (sessions) setMySessions(sessions);
       } catch (error) {
@@ -29,6 +42,9 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
 
   return (
     <Flex direction="column" alignItems="center" width="400px">
+      <Button mb="10px" colorScheme="green" onClick={onOpen}>
+        Add Game
+      </Button>
       <Wrap>
         {mySessions &&
           mySessions.length > 0 &&
@@ -47,7 +63,11 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
                 m="5px"
                 alignItems="baseline"
               >
-                {!session.is_finalized && <Box fontSize="12px">unsaved </Box>}
+                {session.is_finalized ? (
+                  <CheckCircleIcon />
+                ) : (
+                  <WarningTwoIcon />
+                )}
                 <Box fontSize="20px">{session.games.name.toUpperCase()}</Box>
                 <Box fontSize="12px">{session.date_played}</Box>
               </Flex>
@@ -57,9 +77,13 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
 
                 {session.results && session.results.length ? (
                   session.results.map((result: any, idx: number) => (
-                    <Box key={idx} fontSize="12px">
+                    <Tag
+                      key={idx}
+                      bgColor={result.players.color}
+                      fontSize="12px"
+                    >
                       {result.players.name}
-                    </Box>
+                    </Tag>
                   ))
                 ) : (
                   <Box fontSize="12px">No players yet</Box>
@@ -73,6 +97,12 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
           ``
         )}
       </Wrap>
+      <CreateSession
+        supabase={supabase}
+        user={user}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </Flex>
   );
 };

@@ -8,7 +8,6 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import supabaseType from "../resources/types";
-import CreateSession from "./CreateSession";
 import MyPlayers from "./MyPlayers";
 import MySessions from "./MySessions";
 import QuickStats from "./QuickStats";
@@ -34,14 +33,10 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
         isLazy
       >
         <TabList>
-          <Tab>Add Game</Tab>
           <Tab>My Games</Tab>
           <Tab>My Players</Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>
-            <CreateSession supabase={supabase} user={user} />
-          </TabPanel>
           <TabPanel>
             <MySessions supabase={supabase} user={user} />
           </TabPanel>
