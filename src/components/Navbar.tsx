@@ -29,7 +29,7 @@ const Navbar = ({ user }: NavbarProps) => {
           cursor="pointer"
           bgColor="teal"
           onClick={() => navigate(`profile`)}
-          name={user.identities[0].identity_data.full_name}
+          name={user.identities[0].identity_data.full_name || "User"}
           src={user.identities[0].identity_data.avatar_url}
           referrerPolicy="no-referrer"
         />

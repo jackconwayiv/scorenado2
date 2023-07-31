@@ -54,7 +54,7 @@ function App() {
             .eq("id", fetchedUser.id);
           if (profiles && profiles.length > 0) {
             const profile = profiles[0];
-            const userWithProfile = { ...fetchedUser, profile };
+            const userWithProfile = { profile, ...fetchedUser };
             setUser(userWithProfile);
           } else {
             setUser(fetchedUser);
