@@ -179,6 +179,9 @@ const AddPlayerModal = ({
               </InputLeftElement>
               <Input
                 value={displayPoints || ""}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 textAlign="center"
                 onChange={(e) => {
                   if (e.target.value.length < 5) {

@@ -103,7 +103,6 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
         .delete()
         .eq("id", sessionId)
         .select();
-      console.log(deletedSession);
       if (deletedSession) {
         onAlertClose();
         navigate(`/`);
@@ -116,7 +115,7 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         title: "There was an error...",
         description: `${error}`,
@@ -135,7 +134,6 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
         .update({ is_finalized: true })
         .eq("id", sessionId)
         .select();
-      console.log(updatedSession);
       if (updatedSession) {
         onConfirmClose();
         navigate(`/`);

@@ -86,7 +86,6 @@ const PlayerDisplayBox = ({
           .eq("user_id", user.id);
         if (players) {
           const fetchedPlayer = players[0];
-          console.dir(fetchedPlayer);
           setPlayer(fetchedPlayer);
         }
       } catch (error) {

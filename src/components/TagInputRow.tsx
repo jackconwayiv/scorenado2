@@ -117,7 +117,7 @@ const TagInputRow = ({
       if (fetchedTag && fetchedTag.length === 0) {
         const { data: createdTag } = await supabase
           .from("tags")
-          .insert([{ name: tagNameToQuery, game_id: gameId }])
+          .insert([{ name: tagNameToQuery, game_id: gameId, user_id: user.id }])
           .select();
         if (createdTag && createdTag.length > 0) tagToSave = createdTag[0];
         const newTagOptions = [...tagOptions, tagToSave];
