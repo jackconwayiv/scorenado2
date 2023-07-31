@@ -1,4 +1,4 @@
-import { SmallAddIcon } from "@chakra-ui/icons";
+import { QuestionOutlineIcon, SmallAddIcon } from "@chakra-ui/icons";
 import {
   Button,
   Flex,
@@ -6,6 +6,13 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -171,7 +178,24 @@ const TagInputRow = ({
       </Wrap>
       {!finalized && (
         <Flex direction="column" justifyContent="center" mt="5px">
-          <Text fontSize="12px">Add optional tags:</Text>
+          <Flex alignItems="center" mb="5px">
+            <Text fontSize="12px">Tags:</Text>
+
+            <Popover>
+              <PopoverTrigger>
+                <QuestionOutlineIcon cursor="help" ml="5px" />
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverHeader>What are TAGS?</PopoverHeader>
+                <PopoverBody>
+                  You can tag a player's results with words or short phrases,
+                  such as "full board" or "first time".
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          </Flex>
           <InputGroup mr="10px">
             <InputLeftElement
               pointerEvents="none"

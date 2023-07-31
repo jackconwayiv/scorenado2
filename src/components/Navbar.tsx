@@ -23,16 +23,18 @@ const Navbar = ({ user }: NavbarProps) => {
         <Heading cursor="pointer" onClick={() => navigate(`/`)} size="3xl">
           Scorenado
         </Heading>
-        <Avatar
-          m="12px"
-          size="sm"
-          cursor="pointer"
-          bgColor="teal"
-          onClick={() => navigate(`profile`)}
-          name={user.identities[0].identity_data.full_name || "User"}
-          src={user.identities[0].identity_data.avatar_url}
-          referrerPolicy="no-referrer"
-        />
+        {user && user.id && (
+          <Avatar
+            m="12px"
+            size="sm"
+            cursor="pointer"
+            bgColor="teal"
+            onClick={() => navigate(`profile`)}
+            name={user.identities[0].identity_data.full_name}
+            src={user.identities[0].identity_data.avatar_url}
+            referrerPolicy="no-referrer"
+          />
+        )}
       </Flex>
       <Divider mt="10px" />
     </Flex>
