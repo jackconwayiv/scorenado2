@@ -10,7 +10,6 @@ import {
 import supabaseType from "../resources/types";
 import MyPlayers from "./MyPlayers";
 import MySessions from "./MySessions";
-import QuickStats from "./QuickStats";
 
 interface LandingPageProps {
   supabase: supabaseType;
@@ -21,9 +20,10 @@ const LandingPage = ({ supabase, user }: LandingPageProps) => {
   return (
     <Flex direction="column" alignItems="center">
       <Heading mt="10px" size="lg">
-        Welcome {user.user_metadata.name}!
+        Welcome {user.profile.username || user.user_metadata.name}!
       </Heading>
-      <QuickStats supabase={supabase} user={user} />
+      {/* <Flex fontSize="8px">{JSON.stringify(user, null, 4)}</Flex> */}
+      {/* <QuickStats supabase={supabase} user={user} /> */}
       <Tabs
         variant="soft-rounded"
         colorScheme="gray"

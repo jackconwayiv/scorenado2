@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Flex } from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import CreateProfile from "./components/CreateProfile";
 import EditSession from "./components/EditSession";
 import LandingPage from "./components/LandingPage";
 import MyProfile from "./components/MyProfile";
@@ -20,6 +21,7 @@ const supabase = createClient(
 
 function App() {
   const [session, setSession] = useState<any>(null);
+  const [hasProfile, setHasProfile] = useState<boolean>(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -44,7 +46,27 @@ function App() {
         const { data } = await supabase.auth.getSession();
         if (data && data.session) {
           const fetchedUser = data.session.user || {};
-          setUser(fetchedUser);
+          //also fetch profile here:
+
+          let { data: profiles } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", fetchedUser.id);
+          if (profiles && profiles.length > 0) {
+            const profile = profiles[0];
+            const userWithProfile = { ...fetchedUser, profile };
+            setUser(userWithProfile);
+          } else {
+            setUser(fetchedUser);
+          }
+          let { data: mePlayer } = await supabase
+            .from("players")
+            .select("*")
+            .eq("user_id", fetchedUser.id)
+            .eq("profile_id", fetchedUser.id);
+          if (mePlayer && mePlayer.length > 0) {
+            setHasProfile(true);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -74,8 +96,19 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={<LandingPage supabase={supabase} user={user} />}
+              element={
+                hasProfile ? (
+                  <LandingPage supabase={supabase} user={user} />
+                ) : (
+                  <CreateProfile
+                    supabase={supabase}
+                    user={user}
+                    setHasProfile={setHasProfile}
+                  />
+                )
+              }
             />
+
             <Route
               path="session/:sessionId"
               element={<EditSession supabase={supabase} user={user} />}

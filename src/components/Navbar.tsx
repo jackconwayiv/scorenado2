@@ -27,6 +27,7 @@ const Navbar = ({ user }: NavbarProps) => {
           m="12px"
           size="sm"
           cursor="pointer"
+          bgColor="teal"
           onClick={() => navigate(`profile`)}
           name={user.identities[0].identity_data.full_name}
           src={user.identities[0].identity_data.avatar_url}

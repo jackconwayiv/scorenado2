@@ -61,7 +61,7 @@ const AddPlayerModal = ({
     try {
       //if that length is 0, write a new player and grab it into state
       //also use that player to write the results row
-      let confirmedPlayer = { name: "", id: "" };
+      let confirmedPlayer = { name: "", id: "", profile_id: null };
       const myPlayerNames = myPlayers.map((player: any) => player.name);
       if (player.id) {
         //this is case where user clicked a suggested player
@@ -87,25 +87,42 @@ const AddPlayerModal = ({
             .from("players")
             .insert([{ name: name, user_id: user.id }])
             .select();
-          //may need to debug here to make sure we know what newPlayer is
+          //may need to debug here to make sure we know what shape newPlayer is
           if (newPlayer && newPlayer.length > 0) {
             confirmedPlayer = newPlayer[0];
           }
         }
       }
       if (confirmedPlayer && confirmedPlayer.id) {
-        await supabase
-          .from("results")
-          .insert([
-            {
-              session_id: sessionId,
-              player_id: confirmedPlayer.id,
-              points: points,
-              is_winner: isWinner,
-              user_id: user.id,
-            },
-          ])
-          .select();
+        //conditionally write if confirmedPlayer.profile_id === user.id
+        if (confirmedPlayer.profile_id === user.id) {
+          await supabase
+            .from("results")
+            .insert([
+              {
+                session_id: sessionId,
+                player_id: confirmedPlayer.id,
+                profile_id: user.id,
+                points: points,
+                is_winner: isWinner,
+                user_id: user.id,
+              },
+            ])
+            .select();
+        } else {
+          await supabase
+            .from("results")
+            .insert([
+              {
+                session_id: sessionId,
+                player_id: confirmedPlayer.id,
+                points: points,
+                is_winner: isWinner,
+                user_id: user.id,
+              },
+            ])
+            .select();
+        }
         toast({
           title: `${name}'s results are saved!`,
           description: "Add tags, or move to the next player!",
