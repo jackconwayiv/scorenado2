@@ -11,6 +11,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Tag,
+  TagLabel,
+  TagLeftIcon,
   Text,
   Wrap,
   WrapItem,
@@ -19,6 +21,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
+import { SmallAddIcon } from "@chakra-ui/icons";
 
 interface CreateSessionProps {
   supabase: supabaseType;
@@ -183,7 +186,11 @@ const CreateSession = ({
                               setGame(game.name);
                             }}
                           >
-                            {game.name} ({game.qty})
+                            <TagLeftIcon boxSize="12px" as={SmallAddIcon} />
+                            <TagLabel>
+                              {" "}
+                              {game.name} ({game.qty})
+                            </TagLabel>
                           </Tag>
                         </WrapItem>
                       );

@@ -24,21 +24,22 @@ import {
 import { useEffect, useState } from "react";
 import { AiFillTag } from "react-icons/ai";
 import supabaseType from "../resources/types";
-interface TagInputRowProps {
-  resultId: string | null;
-  gameId: string | null;
-  supabase: supabaseType;
+
+interface SessionTagRowProps {
   user: any;
+  supabase: supabaseType;
   finalized: boolean;
+  gameId: string;
+  sessionId: string;
 }
 
-const TagInputRow = ({
-  resultId,
-  gameId,
-  supabase,
+const SessionTagRow = ({
   user,
+  supabase,
   finalized,
-}: TagInputRowProps) => {
+  gameId,
+  sessionId,
+}: SessionTagRowProps) => {
   const [newTagName, setNewTagName] = useState<string | null>(null);
   const [appliedTags, setAppliedTags] = useState<any>([]);
   const [tagOptions, setTagOptions] = useState<any>([]);
@@ -46,14 +47,16 @@ const TagInputRow = ({
     []
   );
   const toast = useToast();
+
   useEffect(() => {
-    console.log("firing tags useEffect");
+    //could fetch this at parent level and push the filtered versions down to the children
+    console.log("firing session tags useEffect");
     const fetchTagsForGame = async () => {
       try {
         let { data: fetchedTags } = await supabase
           .from("tags")
           .select("*")
-          .eq("is_session_tag", false)
+          .eq("is_session_tag", true)
           .eq("game_id", gameId)
           .eq("user_id", user.id);
         setTagOptions(fetchedTags);
@@ -64,32 +67,31 @@ const TagInputRow = ({
     if (gameId !== null) {
       fetchTagsForGame();
     }
-    const fetchTagsForPlayer = async () => {
+    const fetchTagsForSession = async () => {
       try {
-        let { data: result_tags } = await supabase
-          .from("result_tags")
+        let { data: session_tags } = await supabase
+          .from("session_tags")
           .select("*, tags (*)")
-          .eq("result_id", resultId);
-        const fetchedAppliedTags = result_tags?.map(
-          (result_tag: any) => result_tag.tags
+          .eq("session_id", sessionId);
+        const fetchedAppliedTags = session_tags?.map(
+          (session_tag: any) => session_tag.tags
         );
         setAppliedTags(fetchedAppliedTags);
       } catch (error) {
         console.error(error);
       }
     };
-    if (resultId !== null) {
-      fetchTagsForPlayer();
+    if (sessionId !== null) {
+      fetchTagsForSession();
     }
-  }, [gameId, resultId, supabase, user]);
+  }, [gameId, sessionId, supabase, user]);
 
-  const removeTagFromResult = async (tagIdToRemove: number) => {
+  const removeTagFromSession = async (tagIdToRemove: number) => {
     try {
       await supabase
-        .from("result_tags")
+        .from("session_tags")
         .delete()
-        // .select()
-        .eq("result_id", resultId)
+        .eq("session_id", sessionId)
         .eq("tag_id", tagIdToRemove);
       const newAppliedTags = appliedTags.filter(
         (tag: any) => tag.id !== tagIdToRemove
@@ -121,12 +123,19 @@ const TagInputRow = ({
         .select("*")
         .eq("name", tagNameToQuery)
         .eq("game_id", gameId)
-        .eq("is_session_tag", false)
+        .eq("is_session_tag", true)
         .limit(1);
       if (fetchedTag && fetchedTag.length === 0) {
         const { data: createdTag } = await supabase
           .from("tags")
-          .insert([{ name: tagNameToQuery, game_id: gameId, user_id: user.id }])
+          .insert([
+            {
+              name: tagNameToQuery,
+              game_id: gameId,
+              user_id: user.id,
+              is_session_tag: true,
+            },
+          ])
           .select();
         if (createdTag && createdTag.length > 0) tagToSave = createdTag[0];
         const newTagOptions = [...tagOptions, tagToSave];
@@ -135,8 +144,8 @@ const TagInputRow = ({
         if (fetchedTag && fetchedTag.length > 0) tagToSave = fetchedTag[0];
       }
       await supabase
-        .from("result_tags")
-        .insert([{ result_id: resultId, tag_id: tagToSave.id }])
+        .from("session_tags")
+        .insert([{ session_id: sessionId, tag_id: tagToSave.id }])
         .select();
       const newArrayOfTags = [...appliedTags, tagToSave];
       setAppliedTags(newArrayOfTags);
@@ -157,7 +166,7 @@ const TagInputRow = ({
   };
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" mt="10px" width="370px">
       <Wrap>
         {appliedTags.length > 0 &&
           appliedTags.map((mappedTag: any, idx: number) => {
@@ -172,7 +181,7 @@ const TagInputRow = ({
                 <TagLeftIcon boxSize="12px" as={AiFillTag} />
                 <TagLabel>{mappedTag.name}</TagLabel>
                 <TagCloseButton
-                  onClick={() => removeTagFromResult(mappedTag.id)}
+                  onClick={() => removeTagFromSession(mappedTag.id)}
                 />
               </Tag>
             );
@@ -181,7 +190,7 @@ const TagInputRow = ({
       {!finalized && (
         <Flex direction="column" justifyContent="center" mt="5px">
           <Flex alignItems="center" mb="5px">
-            <Text fontSize="12px">Player Tags:</Text>
+            <Text fontSize="12px">Game Tags:</Text>
 
             <Popover>
               <PopoverTrigger>
@@ -192,8 +201,8 @@ const TagInputRow = ({
                 <PopoverCloseButton />
                 <PopoverHeader>What are TAGS?</PopoverHeader>
                 <PopoverBody>
-                  You can tag a player's results with words or short phrases,
-                  such as "full board" or "first time".
+                  You can tag a game session with words or short phrases, such
+                  as "learning game" or "hard mode".
                 </PopoverBody>
               </PopoverContent>
             </Popover>
@@ -257,4 +266,4 @@ const TagInputRow = ({
     </Flex>
   );
 };
-export default TagInputRow;
+export default SessionTagRow;

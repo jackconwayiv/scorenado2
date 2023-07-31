@@ -41,7 +41,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
   }, [supabase, user]);
 
   return (
-    <Flex direction="column" alignItems="center" width="400px">
+    <Flex direction="column" alignItems="center" width="390px">
       <Button mb="10px" colorScheme="green" onClick={onOpen}>
         Add Game
       </Button>

@@ -1,4 +1,3 @@
-import { DeleteIcon, LockIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -17,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import supabaseType from "../resources/types";
 import AddPlayerModal from "./AddPlayerModal";
 import PlayerDisplayBox from "./PlayerDisplayBox";
+import SessionTagRow from "./SessionTagRow";
 
 interface EditSessionProps {
   supabase: supabaseType;
@@ -177,38 +177,26 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
             <Heading size="sm">played on {session.date_played}</Heading>
             {/* <Flex>{JSON.stringify(session, null, 4)}</Flex> */}
           </Flex>
+          <SessionTagRow
+            user={user}
+            supabase={supabase}
+            finalized={session.is_finalized}
+            gameId={session.game_id}
+            sessionId={session.id}
+          />
           {!session.is_finalized && (
             <Flex
               direction="row"
-              justifyContent="space-between"
+              justifyContent="center"
               width="375px"
               mt="10px"
             >
               <Button
                 colorScheme="blue"
-                size="sm"
-                width="100px"
                 isDisabled={session.is_finalized}
                 onClick={onOpen}
               >
-                <PlusSquareIcon mr="5px" /> Player
-              </Button>
-              <Button
-                colorScheme="green"
-                size="sm"
-                width="100px"
-                isDisabled={playerCount < 1 || session.is_finalized}
-                onClick={onConfirmOpen}
-              >
-                <LockIcon mr="5px" /> Save
-              </Button>
-              <Button
-                colorScheme="red"
-                size="sm"
-                isDisabled={session.is_finalized}
-                onClick={onAlertOpen}
-              >
-                <DeleteIcon />
+                + Add Player
               </Button>
             </Flex>
           )}
@@ -244,6 +232,29 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
             </Heading>
           )}
         </>
+      )}
+      {!session.is_finalized && (
+        <Flex
+          direction="row"
+          justifyContent="space-between"
+          width="375px"
+          mt="10px"
+        >
+          <Button
+            colorScheme="green"
+            isDisabled={playerCount < 1 || session.is_finalized}
+            onClick={onConfirmOpen}
+          >
+            Save Game
+          </Button>
+          <Button
+            colorScheme="red"
+            isDisabled={session.is_finalized}
+            onClick={onAlertOpen}
+          >
+            Delete Session
+          </Button>
+        </Flex>
       )}
       <AlertDialog
         isOpen={isAlertOpen}
