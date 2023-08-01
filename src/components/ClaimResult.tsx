@@ -1,4 +1,12 @@
-import { Button, Flex, Heading, Tag, Text, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Tag,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import supabaseType from "../resources/types";
@@ -10,6 +18,7 @@ interface ClaimResultProps {
 const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
   const { resultId } = useParams();
   const [allResults, setAllResults] = useState<any>([]);
+  const [usedProfileIds, setUsedProfileIds] = useState<any>([]);
   const [hasProfile, setHasProfile] = useState<boolean>(false);
   const navigate = useNavigate();
   const toast = useToast();
@@ -17,10 +26,6 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
   useEffect(() => {
     const fetchResultDetails = async () => {
       try {
-        //and all session_tags for that session
-        //and all results with for that session with
-        //player_id not equal to this result's player_id;
-
         let { data: fetchedSessionId } = await supabase
           .from("results")
           .select("session_id, profile_id")
@@ -45,8 +50,25 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
               "*, result_tags(tags(name)), players(name), sessions(games(name), date_played, session_tags(tags(name)))"
             )
             .eq("session_id", sessionId);
-          if (allFetchedResults && allFetchedResults.length > 0)
+          if (allFetchedResults && allFetchedResults.length > 0) {
+            const usedProfIds = allFetchedResults.map(
+              (result) => result.profile_id
+            );
+            setUsedProfileIds(usedProfIds);
             setAllResults(allFetchedResults);
+            if (usedProfIds.indexOf(user.id) > -1) {
+              //you have already claimed a score in this game
+              setHasProfile(true);
+              toast({
+                title: "You've already claimed a score in this game!",
+                status: "error",
+                duration: 10000,
+                position: "top",
+                isClosable: true,
+              });
+              navigate(`/`);
+            }
+          }
         }
       } catch (error) {
         console.error(error);
@@ -61,7 +83,7 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
       }
     };
     fetchResultDetails();
-  }, [supabase, resultId]);
+  }, [supabase, resultId, user]);
 
   const acceptScore = async () => {
     if (hasProfile) {
@@ -99,12 +121,14 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      {/* <Flex fontSize="8px">
+      <Flex direction="column" fontSize="8px">
         {allResults.map((result: any, idx: number) => (
-          <pre key={idx}>{JSON.stringify(result, null, 4)}</pre>
+          <Card key={idx} padding="25px">
+            <pre>{JSON.stringify(result, null, 4)}</pre>
+          </Card>
         ))}
       </Flex>
-      <pre>{JSON.stringify(hasProfile, null, 4)}</pre> */}
+      {/*<pre>{JSON.stringify(hasProfile, null, 4)}</pre> */}
       <Heading>Claim Result</Heading>
       <Text>You've been invited to claim a score.</Text>
       <Text>
@@ -121,14 +145,22 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
           allResults[0].sessions.date_played}
         .
       </Text>
-      <Text>
-        {allResults &&
-          allResults.length > 0 &&
-          allResults[0].sessions.session_tags.length > 0 &&
-          `The game's tags were: ${allResults[0].sessions.session_tags.join(
-            ", "
-          )}`}
-      </Text>
+
+      {allResults &&
+        allResults.length > 0 &&
+        allResults[0].sessions.session_tags.length > 0 && (
+          <Flex alignItems="center" justifyContent="space-evenly">
+            Game Tags:
+            {allResults[0].sessions.session_tags.map(
+              (session_tag: any, idx: number) => (
+                <Tag key={idx} colorScheme={"teal"} m="5px">
+                  {session_tag.tags.name}
+                </Tag>
+              )
+            )}
+          </Flex>
+        )}
+
       <Flex direction="column">
         {allResults &&
           allResults.length > 0 &&
@@ -156,7 +188,7 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
                   alignItems="center"
                   color={result.id === resultId ? "black" : "gray"}
                 >
-                  Tags:{" "}
+                  Player Tags:{" "}
                   {result.result_tags.map((result_tag: any, idx: number) => (
                     <Tag
                       key={idx}
@@ -178,7 +210,7 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
         justifyContent="space-between"
       >
         <Button
-          isDisabled={hasProfile}
+          isDisabled={hasProfile || usedProfileIds.indexOf(user.id) > -1}
           colorScheme="green"
           onClick={acceptScore}
         >

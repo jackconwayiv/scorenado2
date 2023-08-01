@@ -123,9 +123,33 @@ const PlayerDisplayBox = ({
         onClick={handleNavigate}
       >
         <Flex direction="column">
-          {/* <Text>Avatar or 6-digit confirm code</Text> */}
           <Flex direction="row" justifyContent="space-between">
             <Heading size="md">{player.name}</Heading>
+            {!result.profile_id && (
+              <Button
+                size="xs"
+                ml="10px"
+                mb="5px"
+                width="110px"
+                isDisabled={result.profile_id}
+                onClick={() => {
+                  toast({
+                    title: `Copied ${player.name}'s invite link!`,
+                    description: "Paste it in a text to your friend!",
+                    status: "success",
+                    duration: 3000,
+                    position: "top",
+                    isClosable: true,
+                  });
+                  navigator.clipboard.writeText(
+                    `Hey ${player.name}! Claim your game score on Scorenado: https://scorenado.onrender.com/claim/` +
+                      result.id
+                  );
+                }}
+              >
+                Invite Link
+              </Button>
+            )}
             {result.points > 0 && <Box>{result.points} points</Box>}
             <Box>{result.is_winner ? "WINNER" : " "}</Box>
           </Flex>

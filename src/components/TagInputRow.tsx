@@ -193,7 +193,7 @@ const TagInputRow = ({
                 <PopoverHeader>What are TAGS?</PopoverHeader>
                 <PopoverBody>
                   You can tag a player's results with words or short phrases,
-                  such as "full board" or "first time".
+                  such as "full board", "first game", or an MVP card or strategy.
                 </PopoverBody>
               </PopoverContent>
             </Popover>
