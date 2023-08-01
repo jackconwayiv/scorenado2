@@ -29,24 +29,23 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
     console.log("firing use effect to grab sessions");
     const fetchMySessions = async () => {
       try {
-        let { data: sessions } = await supabase
-          .from("sessions")
-          .select("*, games (name), results (name, players (name, color))")
-          .eq("user_id", user.id);
-        if (sessions) setMySessions(sessions);
-        let { data: othersessions } = await supabase
-          .from("sessions")
-          .select(
-            "*, games (name), results (name, profile_id, players (name, color))"
-          )
-          .eq("results.profile_id", user.id)
-          .neq("user_id", user.id);
-        //is this currently fetching all sessions in the db?
-        //use the player_players join table to grab all linked instances of "Player"
-        // console.dir(othersessions);
-        if (sessions && othersessions) {
-          const newSessions = [...sessions, ...othersessions];
-          setMySessions(newSessions);
+        let { data: results } = await supabase
+          .from("results")
+          .select("*")
+          .eq("profile_id", user.id);
+        const arrayOfSessionIds = results?.map((result) => result.session_id);
+        if (arrayOfSessionIds) {
+          let { data: othersessions } = await supabase
+            .from("sessions")
+            .select(
+              "*, games (name), results (players (name, color), profile_id)"
+            )
+            .in("id", [...arrayOfSessionIds])
+            .order("date_played", { ascending: false });
+          //use the player_players join table to grab all linked instances of "Player"
+          if (othersessions) {
+            setMySessions(othersessions);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -67,6 +66,9 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
       <Button mb="10px" colorScheme="green" onClick={onOpen}>
         Add Game
       </Button>
+      {/* <Flex>
+        <pre>{JSON.stringify(mySessions[1], null, 4)}</pre>
+      </Flex> */}
       <Wrap>
         {mySessions &&
           mySessions.length > 0 &&
@@ -105,15 +107,25 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
                 {/* may need to wrap here for 6+ players */}
 
                 {session.results && session.results.length ? (
-                  session.results.map((result: any, idx: number) => (
-                    <Tag
-                      key={idx}
-                      bgColor={result.players.color}
-                      fontSize="12px"
-                    >
-                      {result.players.name}
-                    </Tag>
-                  ))
+                  session.results
+                    .sort(function (a: any, b: any) {
+                      if (a.players.name < b.players.name) {
+                        return -1;
+                      }
+                      if (a.players.name > b.players.name) {
+                        return 1;
+                      }
+                      return 0;
+                    })
+                    .map((result: any, idx: number) => (
+                      <Tag
+                        key={idx}
+                        bgColor={result.players.color}
+                        fontSize="12px"
+                      >
+                        {result.players.name}
+                      </Tag>
+                    ))
                 ) : (
                   <Box fontSize="12px">No players yet</Box>
                 )}
