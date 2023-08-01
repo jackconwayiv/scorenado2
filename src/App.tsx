@@ -111,7 +111,7 @@ function App() {
             />
 
             <Route
-              path="/session/:sessionId/"
+              path="/session/:sessionId"
               element={<EditSession supabase={supabase} user={user} />}
             />
             <Route
@@ -119,11 +119,11 @@ function App() {
               element={<MyProfile supabase={supabase} user={user} />}
             />
             <Route
-              path="/player/:playerId/"
+              path="/player/:playerId"
               element={<PlayerView supabase={supabase} user={user} />}
             />
             <Route
-              path="/claim/:resultId/"
+              path="/result/:resultId/claim"
               element={<ClaimResult supabase={supabase} user={user} />}
             />
             <Route

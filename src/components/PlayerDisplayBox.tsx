@@ -142,8 +142,7 @@ const PlayerDisplayBox = ({
                     isClosable: true,
                   });
                   navigator.clipboard.writeText(
-                    `Hey ${player.name}! Claim your game score on Scorenado: https://scorenado.onrender.com/claim/` +
-                      result.id
+                    `Hey ${player.name}! Claim your game score on Scorenado: ${window.location.origin}/result/${result.id}/claim`
                   );
                 }}
               >
