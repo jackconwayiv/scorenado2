@@ -32,11 +32,11 @@ const Scores = ({ supabase }: ScoresProps) => {
   return (
     <Flex direction="column" alignItems="center">
       <Heading size="lg">Leaderboard (Scores and Calendar)</Heading>
-      {sessions &&
+      {/* {sessions &&
         sessions.length > 0 &&
         sessions.map((session: any, idx: number) => (
           <Flex key={idx}>{JSON.stringify(session, null, 4)}</Flex>
-        ))}
+        ))} */}
     </Flex>
   );
 };

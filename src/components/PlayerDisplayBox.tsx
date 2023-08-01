@@ -97,7 +97,7 @@ const PlayerDisplayBox = ({
 
   const handleNavigate = async () => {
     if (finalized) {
-      navigate(`/players/${player.id}`);
+      navigate(`/player/${player.id}`);
     }
   };
 

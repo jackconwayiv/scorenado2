@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Flex } from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import ClaimResult from "./components/ClaimResult";
 import CreateProfile from "./components/CreateProfile";
 import EditSession from "./components/EditSession";
 import LandingPage from "./components/LandingPage";
@@ -118,8 +119,12 @@ function App() {
               element={<MyProfile supabase={supabase} user={user} />}
             />
             <Route
-              path="players/:playerId"
+              path="player/:playerId"
               element={<PlayerView supabase={supabase} user={user} />}
+            />
+            <Route
+              path="claim/:resultId"
+              element={<ClaimResult supabase={supabase} user={user} />}
             />
             <Route
               path="leaderboard"

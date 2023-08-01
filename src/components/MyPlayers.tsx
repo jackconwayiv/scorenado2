@@ -46,7 +46,7 @@ const MyPlayers = ({ supabase, user }: MyPlayersProps) => {
               key={player.id}
               cursor="pointer"
               bgColor={player.color}
-              onClick={() => navigate(`/players/${player.id}`)}
+              onClick={() => navigate(`/player/${player.id}`)}
             >
               <Heading size="sm">{player.name}</Heading>
             </Card>
