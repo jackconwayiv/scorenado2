@@ -1,12 +1,4 @@
-import {
-  Button,
-  Card,
-  Flex,
-  Heading,
-  Tag,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Button, Flex, Heading, Tag, Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import supabaseType from "../resources/types";
@@ -121,13 +113,13 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
 
   return (
     <Flex direction="column" alignItems="center">
-      <Flex direction="column" fontSize="8px">
+      {/* <Flex direction="column" fontSize="8px">
         {allResults.map((result: any, idx: number) => (
           <Card key={idx} padding="25px">
             <pre>{JSON.stringify(result, null, 4)}</pre>
           </Card>
         ))}
-      </Flex>
+      </Flex> */}
       {/*<pre>{JSON.stringify(hasProfile, null, 4)}</pre> */}
       <Heading>Claim Result</Heading>
       <Text>You've been invited to claim a score.</Text>
@@ -205,6 +197,7 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
       </Flex>
       <Flex
         mt="10px"
+        mb="10px"
         direction="row"
         width="80%"
         justifyContent="space-between"
