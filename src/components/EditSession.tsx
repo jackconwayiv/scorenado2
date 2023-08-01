@@ -239,6 +239,7 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
           justifyContent="space-between"
           width="375px"
           mt="10px"
+          mb="10px"
         >
           <Button
             colorScheme="green"
