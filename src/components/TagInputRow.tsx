@@ -171,9 +171,9 @@ const TagInputRow = ({
               >
                 <TagLeftIcon boxSize="12px" as={AiFillTag} />
                 <TagLabel>{mappedTag.name}</TagLabel>
-                <TagCloseButton
+                {!finalized && <TagCloseButton
                   onClick={() => removeTagFromResult(mappedTag.id)}
-                />
+                />}
               </Tag>
             );
           })}

@@ -96,7 +96,7 @@ const PlayerDisplayBox = ({
   }, [supabase, user, result]);
 
   const handleNavigate = async () => {
-    if (finalized) {
+    if (finalized && result.user_id === user.id) {
       navigate(`/player/${player.id}`);
     }
   };
@@ -119,13 +119,13 @@ const PlayerDisplayBox = ({
       <Card
         padding="10px"
         bgColor={player?.color || "gray.200"}
-        cursor={finalized ? "pointer" : "default"}
+        cursor={finalized && result.user_id === user.id ? "pointer" : "default"}
         onClick={handleNavigate}
       >
         <Flex direction="column">
           <Flex direction="row" justifyContent="space-between">
             <Heading size="md">{player.name}</Heading>
-            {!result.profile_id && (
+            {!result.profile_id && result.user_id === user.id && (
               <Button
                 size="xs"
                 ml="10px"

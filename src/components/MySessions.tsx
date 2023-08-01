@@ -24,6 +24,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
   const [mySessions, setMySessions] = useState<any[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+
   useEffect(() => {
     console.log("firing use effect to grab sessions");
     const fetchMySessions = async () => {
@@ -33,11 +34,32 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
           .select("*, games (name), results (name, players (name, color))")
           .eq("user_id", user.id);
         if (sessions) setMySessions(sessions);
+        let { data: othersessions } = await supabase
+          .from("sessions")
+          .select(
+            "*, games (name), results (name, profile_id, players (name, color))"
+          )
+          .eq("results.profile_id", user.id)
+          .neq("user_id", user.id);
+        //is this currently fetching all sessions in the db?
+        //use the player_players join table to grab all linked instances of "Player"
+        // console.dir(othersessions);
+        if (sessions && othersessions) {
+          const newSessions = [...sessions, ...othersessions];
+          setMySessions(newSessions);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchOtherSessions = async () => {
+      try {
       } catch (error) {
         console.error(error);
       }
     };
     fetchMySessions();
+    fetchOtherSessions();
   }, [supabase, user]);
 
   return (
@@ -55,8 +77,15 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
               padding="5px"
               margin="5px"
               bgColor={session.is_finalized ? `gray.100` : `gray.200`}
-              cursor="pointer"
-              onClick={() => navigate(`/session/${session.id}`)}
+              cursor={
+                session.user_id === user.id || session.is_finalized
+                  ? "pointer"
+                  : "default"
+              }
+              onClick={() => {
+                if (session.user_id === user.id || session.is_finalized)
+                  navigate(`/session/${session.id}`);
+              }}
             >
               <Flex
                 justifyContent="space-between"
