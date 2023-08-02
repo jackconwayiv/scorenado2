@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   Flex,
+  Heading,
   Tag,
   Text,
   Wrap,
@@ -100,8 +101,8 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
                 navigate(`/session/${session.id}`);
             }}
           >
-            <Flex justifyContent="space-between" m="5px" alignItems="baseline">
-              <Flex>
+            <Flex justifyContent="space-between" m="5px" alignItems="center">
+              <Flex alignItems="center">
                 {session.is_finalized ? (
                   <Text color="green" mr="10px">
                     <CheckCircleIcon />
@@ -111,16 +112,7 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
                     <WarningTwoIcon />
                   </Text>
                 )}
-                <Box>
-                  <h1
-                    style={{
-                      fontSize: "20px",
-                    }}
-                    className="blocky"
-                  >
-                    {session.games.name}
-                  </h1>
-                </Box>
+                <Heading size="sm">{session.games.name.toUpperCase()}</Heading>
               </Flex>
               <Box fontSize="12px">{session.date_played}</Box>
             </Flex>
