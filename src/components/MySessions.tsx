@@ -2,7 +2,6 @@ import { CheckCircleIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Card,
   Divider,
   Flex,
   Tag,
@@ -74,86 +73,90 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
   }, [supabase, user]);
 
   return (
-    <Flex direction="column" alignItems="center" width="390px">
+    <Flex direction="column" alignItems="center" width="100%">
       <Button mb="10px" colorScheme="green" onClick={onOpen}>
         Add Game
       </Button>
       {/* <Flex>
-        <pre>{JSON.stringify(mySessions[1], null, 4)}</pre>
+        <pre>{JSON.stringify(mySessions[2], null, 4)}</pre>
       </Flex> */}
-      <Wrap>
-        {mySessions &&
-          mySessions.length > 0 &&
-          mySessions.map((session) => (
-            <Card
-              key={session.id}
-              width="375px"
-              padding="5px"
-              margin="5px"
-              bgColor={session.is_finalized ? `gray.100` : `gray.200`}
-              cursor={
-                session.user_id === user.id || session.is_finalized
-                  ? "pointer"
-                  : "default"
-              }
-              onClick={() => {
-                if (session.user_id === user.id || session.is_finalized)
-                  navigate(`/session/${session.id}`);
-              }}
-            >
-              <Flex
-                justifyContent="space-between"
-                m="5px"
-                alignItems="baseline"
-              >
+      {mySessions &&
+        mySessions.length > 0 &&
+        mySessions.map((session) => (
+          <Flex
+            key={session.id}
+            padding="5px"
+            mt="5px"
+            direction="column"
+            width="100%"
+            bgColor={session.is_finalized ? `gray.100` : `gray.200`}
+            cursor={
+              session.user_id === user.id || session.is_finalized
+                ? "pointer"
+                : "default"
+            }
+            onClick={() => {
+              if (session.user_id === user.id || session.is_finalized)
+                navigate(`/session/${session.id}`);
+            }}
+          >
+            <Flex justifyContent="space-between" m="5px" alignItems="baseline">
+              <Flex>
                 {session.is_finalized ? (
-                  <Text color="green">
+                  <Text color="green" mr="10px">
                     <CheckCircleIcon />
                   </Text>
                 ) : (
-                  <Text color="red">
+                  <Text color="red" mr="10px">
                     <WarningTwoIcon />
                   </Text>
                 )}
-                <Box fontSize="20px">{session.games.name.toUpperCase()}</Box>
-                <Box fontSize="12px">{session.date_played}</Box>
+                <Box>
+                  <h1
+                    style={{
+                      fontSize: "20px",
+                    }}
+                    className="blocky"
+                  >
+                    {session.games.name}
+                  </h1>
+                </Box>
               </Flex>
-              <Divider color="gray.200" />
-              <Flex justifyContent="space-evenly" m="5px">
-                {/* may need to wrap here for 6+ players */}
-
-                {session.results && session.results.length ? (
-                  session.results
-                    .sort(function (a: any, b: any) {
-                      if (a.players.name < b.players.name) {
-                        return -1;
+              <Box fontSize="12px">{session.date_played}</Box>
+            </Flex>
+            <Divider color="gray.200" />
+            {/* <Flex justifyContent="space-evenly" m="5px"> */}
+            <Wrap>
+              {session.results && session.results.length ? (
+                session.results
+                  .sort(function (a: any, b: any) {
+                    if (a.players.name < b.players.name) {
+                      return -1;
+                    }
+                    if (a.players.name > b.players.name) {
+                      return 1;
+                    }
+                    return 0;
+                  })
+                  .map((result: any, idx: number) => (
+                    <Tag
+                      key={idx}
+                      bgColor={
+                        result.profile_id ? result.players.color : "red.400"
                       }
-                      if (a.players.name > b.players.name) {
-                        return 1;
-                      }
-                      return 0;
-                    })
-                    .map((result: any, idx: number) => (
-                      <Tag
-                        key={idx}
-                        bgColor={result.players.color}
-                        fontSize="12px"
-                      >
-                        {result.players.name}
-                      </Tag>
-                    ))
-                ) : (
-                  <Box fontSize="12px">No players yet</Box>
-                )}
-              </Flex>
-            </Card>
-          ))}
-        {!mySessions || mySessions.length === 0 ? (
-          <Text>No games yet!</Text>
-        ) : (
-          ``
-        )}
-      </Wrap>
+                      fontSize="12px"
+                      m="5px"
+                    >
+                      {result.players.name}
+                    </Tag>
+                  ))
+              ) : (
+                <Box fontSize="12px">No players yet</Box>
+              )}
+            </Wrap>
+          </Flex>
+        ))}
+      {!mySessions || mySessions.length === 0 ? <Text>No games yet!</Text> : ``}
       <CreateSession
         supabase={supabase}
         user={user}

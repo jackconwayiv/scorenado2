@@ -1,4 +1,4 @@
-import { Avatar, Divider, Flex, Heading } from "@chakra-ui/react";
+import { Avatar, Divider, Flex } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import HamburgerMenu from "./HamburgerMenu";
 
@@ -20,9 +20,19 @@ const Navbar = ({ user }: NavbarProps) => {
         <Flex m="12px">
           <HamburgerMenu />
         </Flex>
-        <Heading cursor="pointer" onClick={() => navigate(`/`)} size="3xl">
+        {/* <Heading cursor="pointer" onClick={() => navigate(`/`)} size="3xl">
           Scorenado
-        </Heading>
+        </Heading> */}
+        <h1
+          style={{
+            fontSize: "60px",
+            cursor: "pointer",
+          }}
+          className="scripty"
+          onClick={() => navigate(`/`)}
+        >
+          Scorenado
+        </h1>
         {user && user.id && (
           <Avatar
             m="12px"
@@ -36,7 +46,7 @@ const Navbar = ({ user }: NavbarProps) => {
           />
         )}
       </Flex>
-      <Divider mt="10px" />
+      <Divider />
     </Flex>
   );
 };

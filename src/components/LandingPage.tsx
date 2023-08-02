@@ -1,6 +1,5 @@
 import {
   Flex,
-  Heading,
   Tab,
   TabList,
   TabPanel,
@@ -19,9 +18,15 @@ interface LandingPageProps {
 const LandingPage = ({ supabase, user }: LandingPageProps) => {
   return (
     <Flex direction="column" alignItems="center">
-      <Heading mt="10px" size="lg">
-        Welcome {user.profile.username || user.user_metadata.name}!
-      </Heading>
+      <h1
+        style={{
+          fontSize: "40px",
+        }}
+        className="blocky"
+      >
+        Welcome, {user.profile.username || user.user_metadata.name}!
+      </h1>
+
       {/* <Flex fontSize="8px">{JSON.stringify(user, null, 4)}</Flex> */}
       {/* <QuickStats supabase={supabase} user={user} /> */}
       <Tabs
