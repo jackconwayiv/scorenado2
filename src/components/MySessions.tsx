@@ -35,16 +35,28 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
           .eq("profile_id", user.id);
         const arrayOfSessionIds = results?.map((result) => result.session_id);
         if (arrayOfSessionIds) {
-          let { data: othersessions } = await supabase
+          let { data: ownedSessions } = await supabase
             .from("sessions")
-            .select(
-              "*, games (name), results (players (name, color), profile_id)"
-            )
-            .in("id", [...arrayOfSessionIds])
-            .order("date_played", { ascending: false });
-          //use the player_players join table to grab all linked instances of "Player"
-          if (othersessions) {
-            setMySessions(othersessions);
+            .select("*")
+            .eq("user_id", user.id);
+          if (ownedSessions) {
+            const unfinishedSessions = ownedSessions.filter(
+              (session) => arrayOfSessionIds.indexOf(session.id) === -1
+            );
+            unfinishedSessions.forEach((session) =>
+              arrayOfSessionIds.push(session.id)
+            );
+            let { data: othersessions } = await supabase
+              .from("sessions")
+              .select(
+                "*, games (name), results (players (name, color), profile_id)"
+              )
+              .in("id", arrayOfSessionIds)
+              .order("date_played", { ascending: false })
+              .order("is_finalized", { ascending: true });
+            if (othersessions) {
+              setMySessions(othersessions);
+            }
           }
         }
       } catch (error) {
@@ -95,9 +107,13 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
                 alignItems="baseline"
               >
                 {session.is_finalized ? (
-                  <CheckCircleIcon />
+                  <Text color="green">
+                    <CheckCircleIcon />
+                  </Text>
                 ) : (
-                  <WarningTwoIcon />
+                  <Text color="red">
+                    <WarningTwoIcon />
+                  </Text>
                 )}
                 <Box fontSize="20px">{session.games.name.toUpperCase()}</Box>
                 <Box fontSize="12px">{session.date_played}</Box>

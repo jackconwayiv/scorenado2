@@ -39,9 +39,10 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
           let { data: allFetchedResults } = await supabase
             .from("results")
             .select(
-              "*, result_tags(tags(name)), players(name), sessions(games(name), date_played, session_tags(tags(name)))"
+              "*, user_id, result_tags(tags(name)), players(name, id, profile_id), sessions(games(name), date_played, session_tags(tags(name)))"
             )
             .eq("session_id", sessionId);
+          //grab the relevant friends rows, using .eq?
           if (allFetchedResults && allFetchedResults.length > 0) {
             const usedProfIds = allFetchedResults.map(
               (result) => result.profile_id
@@ -108,6 +109,37 @@ const ClaimResult = ({ user, supabase }: ClaimResultProps) => {
           isClosable: true,
         });
       }
+    }
+  };
+
+  const forgeFriendship = async (friendId: string) => {
+    try {
+      //grab the id of the player object with profile_id = user.id
+      const myPlayerId = "546ggd";
+      const { data: newFriendship } = await supabase
+        .from("friends")
+        .insert([
+          { user_id: user.id, player_id: myPlayerId, friend_id: friendId },
+        ])
+        .select();
+      console.log(newFriendship);
+      toast({
+        title: `You've now linked player profiles with friendName!`,
+        status: "success",
+        duration: 5000,
+        position: "top",
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "There was an error...",
+        description: `${error}`,
+        status: "error",
+        duration: 10000,
+        position: "top",
+        isClosable: true,
+      });
     }
   };
 

@@ -1,3 +1,4 @@
+import { SmallAddIcon } from "@chakra-ui/icons";
 import {
   Button,
   Checkbox,
@@ -14,6 +15,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Tag,
+  TagLabel,
+  TagLeftIcon,
   Wrap,
   WrapItem,
   useToast,
@@ -87,7 +90,6 @@ const AddPlayerModal = ({
             .from("players")
             .insert([{ name: name, user_id: user.id }])
             .select();
-          //may need to debug here to make sure we know what shape newPlayer is
           if (newPlayer && newPlayer.length > 0) {
             confirmedPlayer = newPlayer[0];
           }
@@ -250,7 +252,8 @@ const AddPlayerModal = ({
                         setPlayer(player);
                       }}
                     >
-                      {player.name}
+                      <TagLeftIcon boxSize="12px" as={SmallAddIcon} />
+                      <TagLabel>{player.name}</TagLabel>
                     </Tag>
                   </WrapItem>
                 );
