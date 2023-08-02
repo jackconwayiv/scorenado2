@@ -1,8 +1,7 @@
-import { CheckCircleIcon, WarningTwoIcon } from "@chakra-ui/icons";
+import { WarningTwoIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Divider,
   Flex,
   Heading,
   Tag,
@@ -88,9 +87,12 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
             key={session.id}
             padding="5px"
             mt="5px"
+            minH="75px"
             direction="column"
+            justifyContent="space-between"
             width="100%"
-            bgColor={session.is_finalized ? `gray.100` : `gray.200`}
+            border={session.is_finalized ? "0" : "1px gray dashed"}
+            bgColor={session.is_finalized ? `gray.100` : `white`}
             cursor={
               session.user_id === user.id || session.is_finalized
                 ? "pointer"
@@ -102,21 +104,16 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
             }}
           >
             <Flex justifyContent="space-between" m="5px" alignItems="center">
-              <Flex alignItems="center">
-                {session.is_finalized ? (
-                  <Text color="green" mr="10px">
-                    <CheckCircleIcon />
-                  </Text>
-                ) : (
+              <Flex alignItems="center" justifyContent="space-between">
+                {!session.is_finalized && (
                   <Text color="red" mr="10px">
                     <WarningTwoIcon />
                   </Text>
                 )}
-                <Heading size="sm">{session.games.name.toUpperCase()}</Heading>
+                <Heading size="xs">{session.games.name.toUpperCase()}</Heading>
               </Flex>
               <Box fontSize="12px">{session.date_played}</Box>
             </Flex>
-            <Divider color="gray.200" />
             {/* <Flex justifyContent="space-evenly" m="5px"> */}
             <Wrap>
               {session.results && session.results.length ? (
@@ -133,13 +130,13 @@ const MySessions = ({ supabase, user }: MySessionsProps) => {
                   .map((result: any, idx: number) => (
                     <Tag
                       key={idx}
-                      bgColor={
-                        result.profile_id ? result.players.color : "red.400"
-                      }
+                      bgColor={result.players.color}
                       fontSize="12px"
                       m="5px"
                     >
+                      {!result.profile_id && `'`}
                       {result.players.name}
+                      {!result.profile_id && `'`}
                     </Tag>
                   ))
               ) : (

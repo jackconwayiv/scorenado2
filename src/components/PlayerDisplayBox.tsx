@@ -8,7 +8,6 @@ import {
   AlertDialogOverlay,
   Avatar,
   Button,
-  Card,
   Flex,
   Heading,
   Text,
@@ -115,109 +114,109 @@ const PlayerDisplayBox = ({
   };
 
   return (
-    <>
-      <Card
-        padding="10px"
-        mt="10px"
-        bgColor={player?.color || "gray.200"}
-        cursor={finalized && result.user_id === user.id ? "pointer" : "default"}
-        onClick={handleNavigate}
-      >
-        <Flex direction="column">
-          <Flex
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Flex
-              direction="row"
-              justifyContent="baseline"
-              width="35%"
-              alignItems="center"
+    <Flex
+      padding="10px"
+      mt="10px"
+      width="98%"
+      minH="75px"
+      direction="column"
+      alignItems="space-between"
+      justifyContent="space-between"
+      bgColor={player?.color || "gray.200"}
+      cursor={finalized && result.user_id === user.id ? "pointer" : "default"}
+      onClick={handleNavigate}
+    >
+      <Flex direction="row" justifyContent="space-between" alignItems="center">
+        <Flex
+          direction="row"
+          justifyContent="baseline"
+          width="35%"
+          alignItems="center"
+        >
+          <Heading size="md">{player.name}</Heading>
+          <Text fontSize="12px" ml="5px">
+            {result.team ? `[${result.team}]` : ""}
+          </Text>
+        </Flex>
+        <Flex width="25%" justifyContent="baseline">
+          {!result.profile_id && result.user_id === user.id && (
+            <Button
+              size="xs"
+              colorScheme="yellow"
+              boxShadow="md"
+              width="95px"
+              isDisabled={result.profile_id}
+              onClick={() => {
+                toast({
+                  title: `Copied ${player.name}'s invite link!`,
+                  description: "Paste it in a text to your friend!",
+                  status: "success",
+                  duration: 3000,
+                  position: "top",
+                  isClosable: true,
+                });
+                navigator.clipboard.writeText(
+                  `Hey ${player.name}! Claim your game score on Scorenado: ${window.location.origin}/result/${result.id}/claim`
+                );
+              }}
             >
-              <Heading size="md">{player.name}</Heading>
-              <Text fontSize="12px" ml="5px">
-                {result.team ? `[${result.team}]` : ""}
-              </Text>
-            </Flex>
-            <Flex width="25%" justifyContent="baseline">
-              {!result.profile_id && result.user_id === user.id && (
-                <Button
-                  size="xs"
-                  width="95px"
-                  isDisabled={result.profile_id}
-                  onClick={() => {
-                    toast({
-                      title: `Copied ${player.name}'s invite link!`,
-                      description: "Paste it in a text to your friend!",
-                      status: "success",
-                      duration: 3000,
-                      position: "top",
-                      isClosable: true,
-                    });
-                    navigator.clipboard.writeText(
-                      `Hey ${player.name}! Claim your game score on Scorenado: ${window.location.origin}/result/${result.id}/claim`
-                    );
-                  }}
-                >
-                  <LinkIcon mr="5px" /> Invite Link
-                </Button>
-              )}
-            </Flex>
-            <Flex width="40%" justifyContent="end">
-              <Flex fontSize="12px" ml="10px" mr="10px" fontWeight="800">
-                {result.is_winner ? "WINNER!" : " "}
-              </Flex>
-              {result.points > 0 && (
-                <Flex fontSize="12px">{result.points} points</Flex>
-              )}
-            </Flex>
+              <LinkIcon mr="5px" /> Invite Link
+            </Button>
+          )}
+        </Flex>
+        <Flex width="40%" justifyContent="end">
+          <Flex fontSize="12px" ml="10px" mr="10px" fontWeight="800">
+            {result.is_winner ? "WINNER!" : " "}
           </Flex>
-          {/* <Box fontSize="8px">
+          {result.points > 0 && (
+            <Flex fontSize="12px">{result.points} points</Flex>
+          )}
+        </Flex>
+      </Flex>
+      {/* <Box fontSize="8px">
             {result.id} is the ID, which will be the param on the confirm score
             QR code route{" "}
           </Box> */}
-          <TagInputRow
-            resultId={result.id}
-            gameId={gameId}
-            supabase={supabase}
-            user={user}
-            finalized={finalized}
-          />
-          <Flex
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            width="370px"
-            mt="5px"
-          >
-            {!finalized && (
-              <>
-                {colorArray.map((color: string, idx: number) => (
-                  <Avatar
-                    onClick={() => updateColor(color)}
-                    key={idx}
-                    size="2xs"
-                    name={player.name}
-                    bgColor={`${color}.200`}
-                  />
-                ))}
+      <TagInputRow
+        resultId={result.id}
+        gameId={gameId}
+        supabase={supabase}
+        user={user}
+        finalized={finalized}
+      />
 
-                <Button
-                  size="xs"
-                  width="20px"
-                  mt="5px"
-                  colorScheme="red"
-                  alignSelf="end"
-                  onClick={onAlertOpen}
-                >
-                  <DeleteIcon />
-                </Button>
-              </>
-            )}
-          </Flex>
+      {!finalized && (
+        <Flex
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          mt="5px"
+        >
+          {colorArray.map((color: string, idx: number) => (
+            <Avatar
+              onClick={() => updateColor(color)}
+              key={idx}
+              size="2xs"
+              boxShadow="md"
+              cursor="pointer"
+              name={player.name}
+              bgColor={`${color}.200`}
+            />
+          ))}
+
+          <Button
+            size="xs"
+            width="20px"
+            mt="5px"
+            boxShadow="md"
+            colorScheme="red"
+            alignSelf="end"
+            onClick={onAlertOpen}
+          >
+            <DeleteIcon />
+          </Button>
         </Flex>
-      </Card>
+      )}
       <AlertDialog
         isOpen={isAlertOpen}
         leastDestructiveRef={cancelRef}
@@ -245,7 +244,7 @@ const PlayerDisplayBox = ({
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-    </>
+    </Flex>
   );
 };
 export default PlayerDisplayBox;

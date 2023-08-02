@@ -1,4 +1,4 @@
-import { Card, Flex, Heading, Wrap } from "@chakra-ui/react";
+import { Flex, Heading, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
@@ -13,16 +13,16 @@ const MyPlayers = ({ supabase, user }: MyPlayersProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    //refactor to have a separate place where all api calls are stored
-    //then supabase and user don't have to be pushed down all the way
-    //they can be pushed into that component and the result of the call
-    //can be returned to each component
+    //grab "me" from the array and store it separately
+    //and display yourself before the rest of your friends
+    //sort your friends by # of games
+    //tiebreaker is alphabetical
     const fetchMyPlayers = async () => {
       try {
         //fetch all my players
         let { data: fetchedPlayers } = await supabase
           .from("players")
-          .select("*")
+          .select("*, results(*)")
           .eq("user_id", user.id);
         setPlayers(fetchedPlayers);
       } catch (error) {
@@ -33,25 +33,36 @@ const MyPlayers = ({ supabase, user }: MyPlayersProps) => {
   }, [supabase, user]);
 
   return (
-    <Flex direction="column" alignItems="center">
-      <Wrap>
-        {players &&
-          players.length > 0 &&
-          players.map((player: any) => (
-            <Card
-              width="115px"
-              height="50px"
-              alignItems="center"
-              justifyContent="center"
-              key={player.id}
-              cursor="pointer"
-              bgColor={player.color}
-              onClick={() => navigate(`/player/${player.id}`)}
-            >
-              <Heading size="sm">{player.name}</Heading>
-            </Card>
-          ))}
-      </Wrap>
+    <Flex direction="column" alignItems="center" width="100%">
+      {/* <Flex fontSize="8px">
+        <pre>{JSON.stringify(players, null, 4)}</pre>
+      </Flex> */}
+      {players &&
+        players.length > 0 &&
+        players.map((player: any) => (
+          <Flex
+            minH="75px"
+            mt="10px"
+            p="10px"
+            boxShadow="md"
+            width="100%"
+            direction="column"
+            alignItems="space-between"
+            justifyContent="space-between"
+            key={player.id}
+            cursor="pointer"
+            bgColor={player.color}
+            onClick={() => navigate(`/player/${player.id}`)}
+          >
+            <Heading size="md">{player.name}</Heading>
+
+            <Text fontSize="12px">Games: {player.results.length}</Text>
+            <Text fontSize="12px">
+              Wins:{" "}
+              {player.results.filter((result: any) => result.is_winner).length}
+            </Text>
+          </Flex>
+        ))}
     </Flex>
   );
 };

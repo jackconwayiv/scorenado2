@@ -23,12 +23,7 @@ const Navbar = ({ user }: NavbarProps) => {
         {/* <Heading cursor="pointer" onClick={() => navigate(`/`)} size="3xl">
           Scorenado
         </Heading> */}
-        <Heading
-          size="2xl"
-          fontFamily="Luminari"
-          cursor="pointer"
-          onClick={() => navigate(`/`)}
-        >
+        <Heading size="2xl" cursor="pointer" onClick={() => navigate(`/`)}>
           Scorenado
         </Heading>
         {user && user.id && (

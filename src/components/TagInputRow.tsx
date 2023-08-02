@@ -171,9 +171,11 @@ const TagInputRow = ({
               >
                 <TagLeftIcon boxSize="12px" as={AiFillTag} />
                 <TagLabel>{mappedTag.name}</TagLabel>
-                {!finalized && <TagCloseButton
-                  onClick={() => removeTagFromResult(mappedTag.id)}
-                />}
+                {!finalized && (
+                  <TagCloseButton
+                    onClick={() => removeTagFromResult(mappedTag.id)}
+                  />
+                )}
               </Tag>
             );
           })}
@@ -193,7 +195,8 @@ const TagInputRow = ({
                 <PopoverHeader>What are TAGS?</PopoverHeader>
                 <PopoverBody>
                   You can tag a player's results with words or short phrases,
-                  such as "full board", "first game", or an MVP card or strategy.
+                  such as "full board", "first game", or an MVP card or
+                  strategy.
                 </PopoverBody>
               </PopoverContent>
             </Popover>
