@@ -11,7 +11,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Select,
@@ -167,7 +166,7 @@ const AddPlayerModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} colorScheme="blue" onClose={onClose}>
+    <Modal isOpen={isOpen} size="sm" colorScheme="blue" onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader bgColor="gray.100">Add a Player</ModalHeader>
@@ -293,7 +292,8 @@ const AddPlayerModal = ({
               isDisabled={!name}
               isChecked={isWinner}
               alignSelf="center"
-              mt="5px"
+              m="10px"
+              mt="20px"
               size="lg"
               colorScheme="purple"
               onChange={() => setIsWinner(!isWinner)}
@@ -301,13 +301,12 @@ const AddPlayerModal = ({
               Winner
             </Checkbox>
           </Flex>
+          <Flex justifyContent="center">
+            <Button colorScheme="blue" m="10px" onClick={handleSavePlayer}>
+              Save
+            </Button>
+          </Flex>
         </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleSavePlayer}>
-            Save
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );

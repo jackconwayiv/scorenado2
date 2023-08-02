@@ -1,3 +1,4 @@
+import { SmallAddIcon } from "@chakra-ui/icons";
 import {
   Button,
   Flex,
@@ -21,7 +22,6 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabaseType from "../resources/types";
-import { SmallAddIcon } from "@chakra-ui/icons";
 
 interface CreateSessionProps {
   supabase: supabaseType;
@@ -123,14 +123,14 @@ const CreateSession = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal size="sm" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>New Game Session</ModalHeader>
+        <ModalHeader bgColor="gray.100">New Game Session</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Flex direction="column" width="390px">
-            <Flex direction="column" p="5px" width="390px">
+          <Flex direction="column">
+            <Flex direction="column" p="5px">
               <Flex mt="5px" direction="column" alignItems="baseline">
                 <Text>Date Played:</Text>
                 <InputGroup>
@@ -141,7 +141,6 @@ const CreateSession = ({
                     children="Date"
                   />
                   <Input
-                    width="380px"
                     mr="10px"
                     bgColor="white"
                     type="date"
@@ -151,7 +150,7 @@ const CreateSession = ({
                   />
                 </InputGroup>
               </Flex>
-              <Flex mt="5px" direction="column" alignItems="baseline">
+              <Flex mt="5px" direction="column" alignItems="baseline" mb="5px">
                 <Text>Game Title:</Text>
                 <InputGroup>
                   <InputLeftElement
@@ -165,7 +164,6 @@ const CreateSession = ({
                     onChange={(e) => {
                       handleGameInput(e.target.value);
                     }}
-                    width="380px"
                     textAlign="center"
                     mr="10px"
                     bgColor="white"
@@ -182,15 +180,13 @@ const CreateSession = ({
                             cursor="pointer"
                             size="sm"
                             bgColor="gray.100"
+                            mt="1px"
                             onClick={() => {
                               setGame(game.name);
                             }}
                           >
                             <TagLeftIcon boxSize="12px" as={SmallAddIcon} />
-                            <TagLabel>
-                              {" "}
-                              {game.name} ({game.qty})
-                            </TagLabel>
+                            <TagLabel> {game.name}</TagLabel>
                           </Tag>
                         </WrapItem>
                       );

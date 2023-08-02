@@ -44,7 +44,7 @@ const MyPlayers = ({ supabase, user }: MyPlayersProps) => {
             minH="75px"
             mt="10px"
             p="10px"
-            boxShadow="md"
+            boxShadow="sm"
             width="100%"
             direction="column"
             alignItems="space-between"

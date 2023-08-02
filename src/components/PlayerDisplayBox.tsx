@@ -143,7 +143,7 @@ const PlayerDisplayBox = ({
             <Button
               size="xs"
               colorScheme="yellow"
-              boxShadow="md"
+              boxShadow="sm"
               width="95px"
               isDisabled={result.profile_id}
               onClick={() => {
@@ -197,7 +197,7 @@ const PlayerDisplayBox = ({
               onClick={() => updateColor(color)}
               key={idx}
               size="2xs"
-              boxShadow="md"
+              boxShadow="sm"
               cursor="pointer"
               name={player.name}
               bgColor={`${color}.200`}
@@ -208,7 +208,7 @@ const PlayerDisplayBox = ({
             size="xs"
             width="20px"
             mt="5px"
-            boxShadow="md"
+            boxShadow="sm"
             colorScheme="red"
             alignSelf="end"
             onClick={onAlertOpen}
