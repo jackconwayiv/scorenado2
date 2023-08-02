@@ -14,6 +14,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Tag,
   TagLabel,
   TagLeftIcon,
@@ -50,6 +51,7 @@ const AddPlayerModal = ({
   const [name, setName] = useState<string>("");
   const [player, setPlayer] = useState<any>({});
   const [points, setPoints] = useState<number | null>(null);
+  const [team, setTeam] = useState<string | null>(null);
   const [displayPoints, setDisplayPoints] = useState<string>("");
   const [isWinner, setIsWinner] = useState<boolean>(false);
   const toast = useToast();
@@ -104,10 +106,11 @@ const AddPlayerModal = ({
               {
                 session_id: sessionId,
                 player_id: confirmedPlayer.id,
-                profile_id: user.id,
+                profile_id: user.id, //if it's me, attach it to my profile
                 points: points,
                 is_winner: isWinner,
                 user_id: user.id,
+                team: team,
               },
             ])
             .select();
@@ -121,6 +124,7 @@ const AddPlayerModal = ({
                 points: points,
                 is_winner: isWinner,
                 user_id: user.id,
+                team: team,
               },
             ])
             .select();
@@ -140,6 +144,7 @@ const AddPlayerModal = ({
         setPoints(null);
         setDisplayPoints("");
         setIsWinner(false);
+        setTeam(null);
       } else {
         console.error("We had trouble setting that user.");
       }
@@ -157,84 +162,34 @@ const AddPlayerModal = ({
     }
   };
 
+  const handleUpdateTeam = (letter: string) => {
+    letter.length < 1 ? setTeam(null) : setTeam(letter);
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} colorScheme="blue" onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add a Player</ModalHeader>
+        <ModalHeader bgColor="gray.100">Add a Player</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Flex direction="row" mt="5px">
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                color="gray.400"
-                fontSize=".7em"
-                children={`Name`}
-              />
-              <Input
-                width="240px"
-                value={name}
-                textAlign="center"
-                onChange={(e) => {
-                  handleNameInput(e.target.value);
-                }}
-                bgColor="white"
-              />
-            </InputGroup>
-            <InputGroup width="125px">
-              <InputLeftElement>
-                <Button
-                  size="xs"
-                  m="5px"
-                  onClick={() => {
-                    const newPointsValue = points ? points - 1 : -1;
-                    setPoints(newPointsValue);
-                    setDisplayPoints(newPointsValue.toString());
-                  }}
-                >
-                  -
-                </Button>
-              </InputLeftElement>
-              <Input
-                value={displayPoints || ""}
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                textAlign="center"
-                onChange={(e) => {
-                  if (e.target.value.length < 5) {
-                    const newPointsDisplay = e.target.value;
-                    setDisplayPoints(newPointsDisplay);
-                  }
-                }}
-                onBlur={(e) => {
-                  const newPoints = parseInt(e.target.value) || null;
-                  setPoints(newPoints);
-                  if (!newPoints) {
-                    setDisplayPoints("");
-                  } else {
-                    setDisplayPoints(newPoints.toString());
-                  }
-                }}
-                width="250px"
-                bgColor="white"
-              />
-              <InputRightElement>
-                <Button
-                  size="xs"
-                  m="5px"
-                  onClick={() => {
-                    const newPointsValue = points ? points + 1 : 1;
-                    setPoints(newPointsValue);
-                    setDisplayPoints(newPointsValue.toString());
-                  }}
-                >
-                  +
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          </Flex>
+          Name:
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              color="gray.400"
+              fontSize=".7em"
+              children={`Name`}
+            />
+            <Input
+              value={name}
+              textAlign="center"
+              onChange={(e) => {
+                handleNameInput(e.target.value);
+              }}
+              bgColor="white"
+            />
+          </InputGroup>
           <Wrap>
             {name === "" &&
               myPlayers.map((player: any, idx: number) => {
@@ -259,16 +214,93 @@ const AddPlayerModal = ({
                 );
               })}
           </Wrap>
-          <Checkbox
-            isDisabled={!name}
-            isChecked={isWinner}
-            alignSelf="center"
-            mt="5px"
-            colorScheme="purple"
-            onChange={() => setIsWinner(!isWinner)}
-          >
-            Winner
-          </Checkbox>
+          <Flex direction="row" justifyContent="space-between" mt="10px">
+            <Flex direction="column">
+              Score / Points:
+              <InputGroup width="200px">
+                <InputLeftElement>
+                  <Button
+                    size="xs"
+                    m="5px"
+                    onClick={() => {
+                      const newPointsValue = points ? points - 1 : -1;
+                      setPoints(newPointsValue);
+                      setDisplayPoints(newPointsValue.toString());
+                    }}
+                  >
+                    -
+                  </Button>
+                </InputLeftElement>
+                <Input
+                  value={displayPoints || ""}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  textAlign="center"
+                  onChange={(e) => {
+                    if (e.target.value.length < 5) {
+                      const newPointsDisplay = e.target.value;
+                      setDisplayPoints(newPointsDisplay);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const newPoints = parseInt(e.target.value) || null;
+                    setPoints(newPoints);
+                    if (!newPoints) {
+                      setDisplayPoints("");
+                    } else {
+                      setDisplayPoints(newPoints.toString());
+                    }
+                  }}
+                  bgColor="white"
+                />
+                <InputRightElement>
+                  <Button
+                    size="xs"
+                    m="5px"
+                    onClick={() => {
+                      const newPointsValue = points ? points + 1 : 1;
+                      setPoints(newPointsValue);
+                      setDisplayPoints(newPointsValue.toString());
+                    }}
+                  >
+                    +
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </Flex>
+            <Flex direction="column">
+              Team:
+              <Select
+                width="125px"
+                placeholder="none"
+                onChange={(e) => {
+                  handleUpdateTeam(e.target.value);
+                }}
+              >
+                {["A", "B", "C", "D", "E", "F", "G", "H"].map(
+                  (letter: string, idx: number) => (
+                    <option key={idx} value={letter}>
+                      Team {letter}
+                    </option>
+                  )
+                )}
+              </Select>
+            </Flex>
+          </Flex>
+          <Flex direction="row" justifyContent="center">
+            <Checkbox
+              isDisabled={!name}
+              isChecked={isWinner}
+              alignSelf="center"
+              mt="5px"
+              size="lg"
+              colorScheme="purple"
+              onChange={() => setIsWinner(!isWinner)}
+            >
+              Winner
+            </Checkbox>
+          </Flex>
         </ModalBody>
 
         <ModalFooter>

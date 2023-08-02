@@ -1,4 +1,4 @@
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, LinkIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -7,11 +7,11 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Avatar,
-  Box,
   Button,
   Card,
   Flex,
   Heading,
+  Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -115,42 +115,63 @@ const PlayerDisplayBox = ({
   };
 
   return (
-    <Flex margin="5px" mt="10px" direction="column" width="390px">
+    <>
       <Card
         padding="10px"
+        mt="10px"
         bgColor={player?.color || "gray.200"}
         cursor={finalized && result.user_id === user.id ? "pointer" : "default"}
         onClick={handleNavigate}
       >
         <Flex direction="column">
-          <Flex direction="row" justifyContent="space-between">
-            <Heading size="md">{player.name}</Heading>
-            {!result.profile_id && result.user_id === user.id && (
-              <Button
-                size="xs"
-                ml="10px"
-                mb="5px"
-                width="110px"
-                isDisabled={result.profile_id}
-                onClick={() => {
-                  toast({
-                    title: `Copied ${player.name}'s invite link!`,
-                    description: "Paste it in a text to your friend!",
-                    status: "success",
-                    duration: 3000,
-                    position: "top",
-                    isClosable: true,
-                  });
-                  navigator.clipboard.writeText(
-                    `Hey ${player.name}! Claim your game score on Scorenado: ${window.location.origin}/result/${result.id}/claim`
-                  );
-                }}
-              >
-                Invite Link
-              </Button>
-            )}
-            {result.points > 0 && <Box>{result.points} points</Box>}
-            <Box>{result.is_winner ? "WINNER" : " "}</Box>
+          <Flex
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Flex
+              direction="row"
+              justifyContent="baseline"
+              width="35%"
+              alignItems="center"
+            >
+              <Heading size="md">{player.name}</Heading>
+              <Text fontSize="12px" ml="5px">
+                {result.team ? `[${result.team}]` : ""}
+              </Text>
+            </Flex>
+            <Flex width="25%" justifyContent="baseline">
+              {!result.profile_id && result.user_id === user.id && (
+                <Button
+                  size="xs"
+                  width="95px"
+                  isDisabled={result.profile_id}
+                  onClick={() => {
+                    toast({
+                      title: `Copied ${player.name}'s invite link!`,
+                      description: "Paste it in a text to your friend!",
+                      status: "success",
+                      duration: 3000,
+                      position: "top",
+                      isClosable: true,
+                    });
+                    navigator.clipboard.writeText(
+                      `Hey ${player.name}! Claim your game score on Scorenado: ${window.location.origin}/result/${result.id}/claim`
+                    );
+                  }}
+                >
+                  <LinkIcon mr="5px" /> Invite Link
+                </Button>
+              )}
+            </Flex>
+            <Flex width="40%" justifyContent="end">
+              <Flex fontSize="12px" ml="10px" mr="10px" fontWeight="800">
+                {result.is_winner ? "WINNER!" : " "}
+              </Flex>
+              {result.points > 0 && (
+                <Flex fontSize="12px">{result.points} points</Flex>
+              )}
+            </Flex>
           </Flex>
           {/* <Box fontSize="8px">
             {result.id} is the ID, which will be the param on the confirm score
@@ -224,7 +245,7 @@ const PlayerDisplayBox = ({
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-    </Flex>
+    </>
   );
 };
 export default PlayerDisplayBox;
