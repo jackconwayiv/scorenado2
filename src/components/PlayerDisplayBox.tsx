@@ -133,7 +133,7 @@ const PlayerDisplayBox = ({
           width="35%"
           alignItems="center"
         >
-          <Heading size="md">{player.name}</Heading>
+          <Heading size="md">{player && player.name}</Heading>
           <Text fontSize="12px" ml="5px">
             {result.team ? `[${result.team}]` : ""}
           </Text>
@@ -168,7 +168,7 @@ const PlayerDisplayBox = ({
           <Flex fontSize="12px" ml="10px" mr="10px" fontWeight="800">
             {result.is_winner ? "WINNER!" : " "}
           </Flex>
-          {result.points > 0 && (
+          {result && result.points && result.points !== null && (
             <Flex fontSize="12px">{result.points} points</Flex>
           )}
         </Flex>
