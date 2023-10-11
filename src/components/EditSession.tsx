@@ -57,14 +57,16 @@ const EditSession = ({ supabase, user }: EditSessionProps) => {
   useEffect(() => {
     console.log("fetching my players");
     const fetchMyPlayers = async () => {
-      try {
-        let { data: myFetchedPlayers } = await supabase
-          .from("players")
-          .select("*")
-          .eq("user_id", user.id);
-        setMyPlayers(myFetchedPlayers);
-      } catch (error) {
-        console.error(error);
+      if (user && user.id) {
+        try {
+          let { data: myFetchedPlayers } = await supabase
+            .from("players")
+            .select("*")
+            .eq("user_id", user.id);
+          setMyPlayers(myFetchedPlayers);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     fetchMyPlayers();

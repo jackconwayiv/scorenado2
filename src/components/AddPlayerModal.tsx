@@ -191,6 +191,8 @@ const AddPlayerModal = ({
           </InputGroup>
           <Wrap>
             {name === "" &&
+              myPlayers &&
+              myPlayers.length > 0 &&
               myPlayers.map((player: any, idx: number) => {
                 return (
                   <WrapItem key={player.id}>
